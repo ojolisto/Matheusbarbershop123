@@ -1,111 +1,786 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Matheus Barber Shop</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#1a1a1a 0%,#000 100%);color:#fff;min-height:100vh}.container{max-width:500px;margin:0 auto;padding:20px}.header{background:rgba(0,0,0,.5);padding:20px;text-align:center;border-bottom:2px solid #d4af37;margin-bottom:30px}.header h1{color:#d4af37;font-size:24px;margin-bottom:5px}.header p{color:#888;font-size:14px}.screen{display:none}.screen.active{display:block;animation:fadeIn .3s}@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.welcome{text-align:center;padding:40px 20px}.welcome .icon{font-size:80px;margin-bottom:20px}.welcome h2{font-size:32px;margin-bottom:15px}.welcome p{color:#888;margin-bottom:30px}.info-cards{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:30px}.info-card{background:linear-gradient(135deg,#d4af37 0%,#b8860b 100%);padding:25px;border-radius:15px;text-align:center}.info-card .icon{font-size:36px;margin-bottom:10px}.info-card .title{font-weight:700;color:#000;margin-bottom:5px}.info-card .text{font-size:12px;color:#333}.btn{width:100%;padding:18px;border:none;border-radius:10px;font-size:18px;font-weight:700;cursor:pointer;transition:all .3s;margin-bottom:15px}.btn-primary{background:linear-gradient(135deg,#d4af37 0%,#b8860b 100%);color:#000}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 20px rgba(212,175,55,.3)}.btn-whatsapp{background:#25d366;color:#fff}.btn-instagram{background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);color:#fff}.service-card{background:linear-gradient(135deg,#2a2a2a 0%,#1a1a1a 100%);padding:20px;border-radius:10px;margin-bottom:15px;border:2px solid #333;cursor:pointer;transition:all .3s}.service-card:hover{border-color:#d4af37;transform:translateY(-3px)}.service-header{display:flex;align-items:center;justify-content:space-between}.service-info{display:flex;align-items:center;gap:15px}.service-icon{font-size:40px}.service-name{font-size:20px;font-weight:700;margin-bottom:5px}.service-duration{font-size:14px;color:#888}.service-price{font-size:28px;font-weight:700;color:#d4af37}.back-btn{padding:12px 20px;background:#2a2a2a;color:#fff;border:none;border-radius:8px;cursor:pointer;margin-bottom:20px;font-size:16px}.section-title{font-size:24px;margin-bottom:10px}.section-subtitle{color:#888;margin-bottom:25px}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:30px}.day-btn{padding:12px 5px;background:#2a2a2a;border:2px solid #333;border-radius:10px;cursor:pointer;text-align:center;font-size:12px}.day-btn:hover{border-color:#d4af37}.day-btn.selected{background:#d4af37;color:#000;border-color:#d4af37}.day-weekday{font-size:10px;margin-bottom:3px}.day-number{font-size:18px;font-weight:700;margin-bottom:3px}.day-month{font-size:10px}.time-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:30px}.time-btn{padding:15px;background:#2a2a2a;border:2px solid #333;border-radius:10px;cursor:pointer;text-align:center;font-size:16px;font-weight:700}.time-btn:hover{border-color:#d4af37}.time-btn.selected{background:#d4af37;color:#000;border-color:#d4af37}.summary-box{background:linear-gradient(135deg,#2a2a2a 0%,#1a1a1a 100%);padding:20px;border-radius:10px;border:1px solid #333;margin-bottom:25px}.summary-row{display:flex;justify-content:space-between;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid #333}.summary-row:last-child{border-bottom:none;padding-top:12px;border-top:2px solid #333}.summary-label{color:#888}.summary-value{font-weight:700}.summary-price{font-size:24px;color:#d4af37}.form-group{margin-bottom:20px}.form-label{display:block;margin-bottom:8px;font-weight:700}.form-input{width:100%;padding:15px;background:#2a2a2a;border:2px solid #333;border-radius:10px;color:#fff;font-size:16px}.form-input:focus{outline:0;border-color:#d4af37}.success-icon{font-size:100px;color:#25d366;margin-bottom:20px}.confirmation-box{background:linear-gradient(135deg,#2a2a2a 0%,#1a1a1a 100%);padding:25px;border-radius:10px;border:2px solid #d4af37;margin-bottom:25px}.alert-box{background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.3);padding:15px;border-radius:10px;margin-bottom:25px;text-align:center;color:#25d366}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matheus Barber Shop - Agendamento</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+```
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+        color: #fff;
+        min-height: 100vh;
+    }
+    
+    .container {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .header {
+        background: rgba(0,0,0,0.5);
+        padding: 20px;
+        text-align: center;
+        border-bottom: 2px solid #d4af37;
+        margin-bottom: 30px;
+    }
+    
+    .header h1 {
+        color: #d4af37;
+        font-size: 24px;
+        margin-bottom: 5px;
+    }
+    
+    .header p {
+        color: #888;
+        font-size: 14px;
+    }
+    
+    .screen {
+        display: none;
+    }
+    
+    .screen.active {
+        display: block;
+        animation: fadeIn 0.3s;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .welcome {
+        text-align: center;
+        padding: 40px 20px;
+    }
+    
+    .welcome .icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+    }
+    
+    .welcome h2 {
+        font-size: 32px;
+        margin-bottom: 15px;
+    }
+    
+    .welcome p {
+        color: #888;
+        margin-bottom: 30px;
+    }
+    
+    .info-cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 30px;
+    }
+    
+    .info-card {
+        background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+        padding: 25px;
+        border-radius: 15px;
+        text-align: center;
+    }
+    
+    .info-card .icon {
+        font-size: 36px;
+        margin-bottom: 10px;
+    }
+    
+    .info-card .title {
+        font-weight: bold;
+        color: #000;
+        margin-bottom: 5px;
+    }
+    
+    .info-card .text {
+        font-size: 12px;
+        color: #333;
+    }
+    
+    .btn {
+        width: 100%;
+        padding: 18px;
+        border: none;
+        border-radius: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-bottom: 15px;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+        color: #000;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+    }
+    
+    .btn-whatsapp {
+        background: #25d366;
+        color: #fff;
+    }
+    
+    .btn-instagram {
+        background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        color: #fff;
+    }
+    
+    .service-card {
+        background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border: 2px solid #333;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .service-card:hover {
+        border-color: #d4af37;
+        transform: translateY(-3px);
+    }
+    
+    .service-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .service-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    .service-icon {
+        font-size: 40px;
+    }
+    
+    .service-name {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    
+    .service-duration {
+        font-size: 14px;
+        color: #888;
+    }
+    
+    .service-price {
+        font-size: 28px;
+        font-weight: bold;
+        color: #d4af37;
+    }
+    
+    .back-btn {
+        padding: 12px 20px;
+        background: #2a2a2a;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-bottom: 20px;
+        font-size: 16px;
+    }
+    
+    .section-title {
+        font-size: 24px;
+        margin-bottom: 10px;
+    }
+    
+    .section-subtitle {
+        color: #888;
+        margin-bottom: 25px;
+    }
+    
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        margin-bottom: 30px;
+    }
+    
+    .day-btn {
+        padding: 12px 5px;
+        background: #2a2a2a;
+        border: 2px solid #333;
+        border-radius: 10px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 12px;
+    }
+    
+    .day-btn:hover {
+        border-color: #d4af37;
+    }
+    
+    .day-btn.selected {
+        background: #d4af37;
+        color: #000;
+        border-color: #d4af37;
+    }
+    
+    .day-weekday {
+        font-size: 10px;
+        margin-bottom: 3px;
+    }
+    
+    .day-number {
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 3px;
+    }
+    
+    .day-month {
+        font-size: 10px;
+    }
+    
+    .time-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+    
+    .time-btn {
+        padding: 15px;
+        background: #2a2a2a;
+        border: 2px solid #333;
+        border-radius: 10px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 16px;
+        font-weight: bold;
+    }
+    
+    .time-btn:hover {
+        border-color: #d4af37;
+    }
+    
+    .time-btn.selected {
+        background: #d4af37;
+        color: #000;
+        border-color: #d4af37;
+    }
+    
+    .summary-box {
+        background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+        padding: 20px;
+        border-radius: 10px;
+        border: 1px solid #333;
+        margin-bottom: 25px;
+    }
+    
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #333;
+    }
+    
+    .summary-row:last-child {
+        border-bottom: none;
+        padding-top: 12px;
+        border-top: 2px solid #333;
+    }
+    
+    .summary-label {
+        color: #888;
+    }
+    
+    .summary-value {
+        font-weight: bold;
+    }
+    
+    .summary-price {
+        font-size: 24px;
+        color: #d4af37;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+    
+    .form-input {
+        width: 100%;
+        padding: 15px;
+        background: #2a2a2a;
+        border: 2px solid #333;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 16px;
+    }
+    
+    .form-input:focus {
+        outline: none;
+        border-color: #d4af37;
+    }
+    
+    .success-icon {
+        font-size: 100px;
+        color: #25d366;
+        margin-bottom: 20px;
+    }
+    
+    .confirmation-box {
+        background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);
+        padding: 25px;
+        border-radius: 10px;
+        border: 2px solid #d4af37;
+        margin-bottom: 25px;
+    }
+    
+    .alert-box {
+        background: rgba(37, 211, 102, 0.1);
+        border: 1px solid rgba(37, 211, 102, 0.3);
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        text-align: center;
+        color: #25d366;
+    }
 </style>
+```
+
 </head>
 <body>
-<div class="header"><h1>💈 Matheus Barber Shop</h1><p>Rio Verde - Goiás</p></div>
+    <div class="header">
+        <h1>💈 Matheus Barber Shop</h1>
+        <p>Rio Verde - Goiás</p>
+    </div>
+
+```
 <div class="container">
-<div id="home" class="screen active">
-<div class="welcome"><div class="icon">💈</div><h2>Bem-vindo!</h2><p>Agende seu horário na melhor barbearia</p></div>
-<div class="info-cards">
-<div class="info-card"><div class="icon">🕐</div><div class="title">Horário</div><div class="text">Seg-Sáb<br>9h-20h</div></div>
-<div class="info-card"><div class="icon">📍</div><div class="title">Localização</div><div class="text">Rio Verde<br>Goiás</div></div>
+    <!-- Home Screen -->
+    <div id="home" class="screen active">
+        <div class="welcome">
+            <div class="icon">💈</div>
+            <h2>Bem-vindo!</h2>
+            <p>Agende seu horário na melhor barbearia</p>
+        </div>
+
+        <div class="info-cards">
+            <div class="info-card">
+                <div class="icon">🕐</div>
+                <div class="title">Horário</div>
+                <div class="text">Seg-Sáb<br>9h-20h</div>
+            </div>
+            <div class="info-card">
+                <div class="icon">📍</div>
+                <div class="title">Localização</div>
+                <div class="text">Rio Verde<br>Goiás</div>
+            </div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-agendar">Agendar Agora</button>
+        <button class="btn btn-whatsapp" id="btn-whatsapp">📱 WhatsApp</button>
+        <button class="btn btn-instagram" id="btn-instagram">📸 Instagram</button>
+    </div>
+
+    <!-- Services Screen -->
+    <div id="services" class="screen">
+        <button class="back-btn" id="back-to-home">← Voltar</button>
+        <h2 class="section-title">Escolha o Serviço</h2>
+        <p class="section-subtitle">Selecione o serviço desejado</p>
+
+        <div class="service-card" data-service='{"id":1,"name":"Cabelo","price":40,"duration":"30 min","icon":"✂️"}'>
+            <div class="service-header">
+                <div class="service-info">
+                    <div class="service-icon">✂️</div>
+                    <div>
+                        <div class="service-name">Cabelo</div>
+                        <div class="service-duration">30 min</div>
+                    </div>
+                </div>
+                <div class="service-price">R$ 40</div>
+            </div>
+        </div>
+
+        <div class="service-card" data-service='{"id":2,"name":"Corte Completo","price":60,"duration":"45 min","icon":"💈"}'>
+            <div class="service-header">
+                <div class="service-info">
+                    <div class="service-icon">💈</div>
+                    <div>
+                        <div class="service-name">Corte Completo</div>
+                        <div class="service-duration">45 min</div>
+                    </div>
+                </div>
+                <div class="service-price">R$ 60</div>
+            </div>
+        </div>
+
+        <div class="service-card" data-service='{"id":3,"name":"Barba","price":30,"duration":"20 min","icon":"🪒"}'>
+            <div class="service-header">
+                <div class="service-info">
+                    <div class="service-icon">🪒</div>
+                    <div>
+                        <div class="service-name">Barba</div>
+                        <div class="service-duration">20 min</div>
+                    </div>
+                </div>
+                <div class="service-price">R$ 30</div>
+            </div>
+        </div>
+
+        <div class="service-card" data-service='{"id":4,"name":"Sobrancelha","price":10,"duration":"10 min","icon":"👁️"}'>
+            <div class="service-header">
+                <div class="service-info">
+                    <div class="service-icon">👁️</div>
+                    <div>
+                        <div class="service-name">Sobrancelha</div>
+                        <div class="service-duration">10 min</div>
+                    </div>
+                </div>
+                <div class="service-price">R$ 10</div>
+            </div>
+        </div>
+
+        <div class="service-card" data-service='{"id":5,"name":"Luzes","price":80,"duration":"60 min","icon":"⚡"}'>
+            <div class="service-header">
+                <div class="service-info">
+                    <div class="service-icon">⚡</div>
+                    <div>
+                        <div class="service-name">Luzes</div>
+                        <div class="service-duration">60 min</div>
+                    </div>
+                </div>
+                <div class="service-price">R$ 80</div>
+            </div>
+        </div>
+
+        <div class="service-card" data-service='{"id":6,"name":"Nevou","price":100,"duration":"90 min","icon":"❄️"}'>
+            <div class="service-header">
+                <div class="service-info">
+                    <div class="service-icon">❄️</div>
+                    <div>
+                        <div class="service-name">Nevou</div>
+                        <div class="service-duration">90 min</div>
+                    </div>
+                </div>
+                <div class="service-price">R$ 100</div>
+            </div>
+        </div>
+
+        <div class="service-card" data-service='{"id":7,"name":"Pigmentação","price":40,"duration":"30 min","icon":"🎨"}'>
+            <div class="service-header">
+                <div class="service-info">
+                    <div class="service-icon">🎨</div>
+                    <div>
+                        <div class="service-name">Pigmentação</div>
+                        <div class="service-duration">30 min</div>
+                    </div>
+                </div>
+                <div class="service-price">R$ 40</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DateTime Screen -->
+    <div id="datetime" class="screen">
+        <button class="back-btn" id="back-to-services">← Voltar</button>
+        <h2 class="section-title">Data e Horário</h2>
+        <p class="section-subtitle">Escolha o melhor dia e horário</p>
+
+        <div class="summary-box">
+            <div class="service-header">
+                <div class="service-info">
+                    <div class="service-icon" id="selected-service-icon"></div>
+                    <div>
+                        <div class="service-name" id="selected-service-name"></div>
+                        <div class="service-duration" id="selected-service-duration"></div>
+                    </div>
+                </div>
+                <div class="service-price" id="selected-service-price"></div>
+            </div>
+        </div>
+
+        <h3 style="margin-bottom: 15px;">📅 Selecione o Dia</h3>
+        <div class="calendar-grid" id="calendar"></div>
+
+        <div id="time-section" style="display: none;">
+            <h3 style="margin-bottom: 15px;">🕐 Selecione o Horário</h3>
+            <div class="time-grid" id="timegrid"></div>
+        </div>
+
+        <button class="btn btn-primary" id="continue-btn" style="display: none;">Continuar</button>
+    </div>
+
+    <!-- Customer Screen -->
+    <div id="customer" class="screen">
+        <button class="back-btn" id="back-to-datetime">← Voltar</button>
+        <h2 class="section-title">Seus Dados</h2>
+        <p class="section-subtitle">Preencha suas informações</p>
+
+        <div class="summary-box">
+            <div class="summary-row">
+                <span class="summary-label">Serviço:</span>
+                <span class="summary-value" id="summary-service"></span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Data:</span>
+                <span class="summary-value" id="summary-date"></span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Horário:</span>
+                <span class="summary-value" id="summary-time"></span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Total:</span>
+                <span class="summary-price" id="summary-price"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">👤 Nome Completo *</label>
+            <input type="text" id="customer-name" class="form-input" placeholder="Seu nome" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">📱 Telefone *</label>
+            <input type="tel" id="customer-phone" class="form-input" placeholder="(34) 99999-9999" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">📧 E-mail (opcional)</label>
+            <input type="email" id="customer-email" class="form-input" placeholder="seu@email.com">
+        </div>
+
+        <button class="btn btn-primary" id="confirm-booking">Confirmar Agendamento</button>
+    </div>
+
+    <!-- Confirmation Screen -->
+    <div id="confirmation" class="screen">
+        <div class="welcome">
+            <div class="success-icon">✅</div>
+            <h2>Agendamento Confirmado!</h2>
+            <p>Seu horário foi reservado com sucesso</p>
+        </div>
+
+        <div class="confirmation-box">
+            <div class="summary-row">
+                <span class="summary-label">Cliente:</span>
+                <span class="summary-value" id="confirm-name"></span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Serviço:</span>
+                <span class="summary-value" id="confirm-service"></span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Data:</span>
+                <span class="summary-value" id="confirm-date"></span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Horário:</span>
+                <span class="summary-value" id="confirm-time"></span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Telefone:</span>
+                <span class="summary-value" id="confirm-phone"></span>
+            </div>
+        </div>
+
+        <div class="alert-box">
+            📱 Uma confirmação foi enviada para o WhatsApp da barbearia!
+        </div>
+
+        <button class="btn btn-whatsapp" id="final-whatsapp">📱 Falar no WhatsApp</button>
+        <button class="btn btn-primary" id="reset-booking">Fazer Novo Agendamento</button>
+    </div>
 </div>
-<button class="btn btn-primary" onclick="showScreen('services')">Agendar Agora</button>
-<button class="btn btn-whatsapp" onclick="window.open('https://wa.me/5534991054546','_blank')">📱 WhatsApp</button>
-<button class="btn btn-instagram" onclick="window.open('https://instagram.com/matheusbarbershop123','_blank')">📸 Instagram</button>
-</div>
-<div id="services" class="screen">
-<button class="back-btn" onclick="showScreen('home')">← Voltar</button>
-<h2 class="section-title">Escolha o Serviço</h2>
-<p class="section-subtitle">Selecione o serviço desejado</p>
-<div class="service-card" onclick="selectService(1,'Cabelo',40,'30 min','✂')">
-<div class="service-header"><div class="service-info"><div class="service-icon">✂</div><div><div class="service-name">Cabelo</div><div class="service-duration">30 min</div></div></div><div class="service-price">R$ 40</div></div>
-</div>
-<div class="service-card" onclick="selectService(2,'Corte Completo',60,'45 min','💈')">
-<div class="service-header"><div class="service-info"><div class="service-icon">💈</div><div><div class="service-name">Corte Completo</div><div class="service-duration">45 min</div></div></div><div class="service-price">R$ 60</div></div>
-</div>
-<div class="service-card" onclick="selectService(3,'Barba',30,'20 min','🪒')">
-<div class="service-header"><div class="service-info"><div class="service-icon">🪒</div><div><div class="service-name">Barba</div><div class="service-duration">20 min</div></div></div><div class="service-price">R$ 30</div></div>
-</div>
-<div class="service-card" onclick="selectService(4,'Sobrancelha',10,'10 min','👁')">
-<div class="service-header"><div class="service-info"><div class="service-icon">👁</div><div><div class="service-name">Sobrancelha</div><div class="service-duration">10 min</div></div></div><div class="service-price">R$ 10</div></div>
-</div>
-<div class="service-card" onclick="selectService(5,'Luzes',80,'60 min','⚡')">
-<div class="service-header"><div class="service-info"><div class="service-icon">⚡</div><div><div class="service-name">Luzes</div><div class="service-duration">60 min</div></div></div><div class="service-price">R$ 80</div></div>
-</div>
-<div class="service-card" onclick="selectService(6,'Nevou',100,'90 min','❄')">
-<div class="service-header"><div class="service-info"><div class="service-icon">❄</div><div><div class="service-name">Nevou</div><div class="service-duration">90 min</div></div></div><div class="service-price">R$ 100</div></div>
-</div>
-<div class="service-card" onclick="selectService(7,'Pigmentação',40,'30 min','🎨')">
-<div class="service-header"><div class="service-info"><div class="service-icon">🎨</div><div><div class="service-name">Pigmentação</div><div class="service-duration">30 min</div></div></div><div class="service-price">R$ 40</div></div>
-</div>
-</div>
-<div id="datetime" class="screen">
-<button class="back-btn" onclick="showScreen('services')">← Voltar</button>
-<h2 class="section-title">Data e Horário</h2>
-<p class="section-subtitle">Escolha o melhor dia e horário</p>
-<div class="summary-box">
-<div class="service-header"><div class="service-info"><div class="service-icon" id="selected-service-icon"></div><div><div class="service-name" id="selected-service-name"></div><div class="service-duration" id="selected-service-duration"></div></div></div><div class="service-price" id="selected-service-price"></div></div>
-</div>
-<h3 style="margin-bottom:15px">📅 Selecione o Dia</h3>
-<div class="calendar-grid" id="calendar"></div>
-<div id="time-section" style="display:none">
-<h3 style="margin-bottom:15px">🕐 Selecione o Horário</h3>
-<div class="time-grid" id="timegrid"></div>
-</div>
-<button class="btn btn-primary" id="continue-btn" style="display:none" onclick="showScreen('customer')">Continuar</button>
-</div>
-<div id="customer" class="screen">
-<button class="back-btn" onclick="showScreen('datetime')">← Voltar</button>
-<h2 class="section-title">Seus Dados</h2>
-<p class="section-subtitle">Preencha suas informações</p>
-<div class="summary-box">
-<div class="summary-row"><span class="summary-label">Serviço:</span><span class="summary-value" id="summary-service"></span></div>
-<div class="summary-row"><span class="summary-label">Data:</span><span class="summary-value" id="summary-date"></span></div>
-<div class="summary-row"><span class="summary-label">Horário:</span><span class="summary-value" id="summary-time"></span></div>
-<div class="summary-row"><span class="summary-label">Total:</span><span class="summary-price" id="summary-price"></span></div>
-</div>
-<div class="form-group">
-<label class="form-label">👤 Nome Completo *</label>
-<input type="text" id="customer-name" class="form-input" placeholder="Seu nome" required>
-</div>
-<div class="form-group">
-<label class="form-label">📱 Telefone *</label>
-<input type="tel" id="customer-phone" class="form-input" placeholder="(34) 99999-9999" required>
-</div>
-<div class="form-group">
-<label class="form-label">📧 E-mail (opcional)</label>
-<input type="email" id="customer-email" class="form-input" placeholder="seu@email.com">
-</div>
-<button class="btn btn-primary" onclick="confirmBooking()">Confirmar Agendamento</button>
-</div>
-<div id="confirmation" class="screen">
-<div class="welcome">
-<div class="success-icon">✅</div>
-<h2>Agendamento Confirmado!</h2>
-<p>Seu horário foi reservado com sucesso</p>
-</div>
-<div class="confirmation-box">
-<div class="summary-row"><span class="summary-label">Cliente:</span><span class="summary-value" id="confirm-name"></span></div>
-<div class="summary-row"><span class="summary-label">Serviço:</span><span class="summary-value" id="confirm-service"></span></div>
-<div class="summary-row"><span class="summary-label">Data:</span><span class="summary-value" id="confirm-date"></span></div>
-<div class="summary-row"><span class="summary-label">Horário:</span><span class="summary-value" id="confirm-time"></span></div>
-<div class="summary-row"><span class="summary-label">Telefone:</span><span class="summary-value" id="confirm-phone"></span></div>
-</div>
-<div class="alert-box">📱 Uma confirmação foi enviada para o WhatsApp da barbearia!</div>
-<button class="btn btn-whatsapp" onclick="window.open(whatsappLink,'_blank')">📱 Falar no WhatsApp</button>
-<button class="btn btn-primary" onclick="resetBooking()">Fazer Novo Agendamento</button>
-</div>
-</div>
+
 <script>
-let selectedService={};let selectedDate=null;let selectedTime=null;let customerData={};let whatsappLink='';function showScreen(screenId){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(screenId).classList.add('active')}function selectService(id,name,price,duration,icon){selectedService={id,name,price,duration,icon};document.getElementById('selected-service-icon').textContent=icon;document.getElementById('selected-service-name').textContent=name;document.getElementById('selected-service-duration').textContent=duration+' • R$ '+price;document.getElementById('selected-service-price').textContent='R$ '+price;showScreen('datetime');generateCalendar()}function generateCalendar(){const calendar=document.getElementById('calendar');calendar.innerHTML='';const today=new Date();for(let i=0;i<7;i++){const date=new Date(today);date.setDate(today.getDate()+i);const dayBtn=document.createElement('div');dayBtn.className='day-btn';dayBtn.onclick=()=>selectDate(date,dayBtn);dayBtn.innerHTML=<div class="day-weekday">${date.toLocaleDateString('pt-BR',{weekday:'short'})}</div><div class="day-number">${date.getDate()}</div><div class="day-month">${date.toLocaleDateString('pt-BR',{month:'short'})}</div>;calendar.appendChild(dayBtn)}}function selectDate(date,btn){document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedDate=date;generateTimeSlots();document.getElementById('time-section').style.display='block'}function generateTimeSlots(){const timegrid=document.getElementById('timegrid');timegrid.innerHTML='';const times=['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30'];times.forEach(time=>{const timeBtn=document.createElement('div');timeBtn.className='time-btn';timeBtn.textContent=time;timeBtn.onclick=()=>selectTime(time,timeBtn);timegrid.appendChild(timeBtn)})}function selectTime(time,btn){document.querySelectorAll('.time-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selectedTime=time;document.getElementById('continue-btn').style.display='block'}function showScreen(screen){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(screen).classList.add('active');if(screen==='customer'){document.getElementById('summary-service').textContent=selectedService.name;document.getElementById('summary-date').textContent=selectedDate.toLocaleDateString('pt-BR');document.getElementById('summary-time').textContent=selectedTime;document.getElementById('summary-price').textContent='R$ '+selectedService.price}}function confirmBooking(){const name=document.getElementById('customer-name').value;const phone=document.getElementById('customer-phone').value;const email=document.getElementById('customer-email').value;if(!name||!phone){alert('Por favor, preencha todos os campos obrigatórios');return}customerData={name,phone,email};document.getElementById('confirm-name').textContent=name;document.getElementById('confirm-service').textContent=selectedService.name;document.getElementById('confirm-date').textContent=selectedDate.toLocaleDateString('pt-BR');document.getElementById('confirm-time').textContent=selectedTime;document.getElementById('confirm-phone').textContent=phone;const message=🔥 *NOVO AGENDAMENTO - MATHEUS BARBER SHOP* 🔥\n\n👤 *Cliente:* ${name}\n📞 *Telefone:* ${phone}\n${email?📧 Email: ${email}\n`:''}\n💈 Serviço: ${selectedService.name}\n📅 Data: ${selectedDate.toLocaleDateString('pt-BR')}\n🕐 Horário: ${selectedTime}\n💰 Valor: R$ ${selectedService.price}\n\n✅ Agendamento confirmado!`;whatsappLink=https://wa.me/5534991054546?text=${encodeURIComponent(message)};showScreen('confirmation');setTimeout(()=>window.open(whatsappLink,'_blank'),1000)}function resetBooking(){selectedService={};selectedDate=null;selectedTime=null;customerData={};document.getElementById('customer-name').value='';document.getElementById('customer-phone').value='';document.getElementById('customer-email').value='';showScreen('home')}
+    // Estado da aplicação
+    let selectedService = {};
+    let selectedDate = null;
+    let selectedTime = null;
+    let customerData = {};
+    let whatsappLink = '';
+
+    // Função para mostrar tela
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    // Botão Agendar Agora
+    document.getElementById('btn-agendar').addEventListener('click', function() {
+        showScreen('services');
+    });
+
+    // Botão WhatsApp
+    document.getElementById('btn-whatsapp').addEventListener('click', function() {
+        window.open('https://wa.me/5534991054546', '_blank');
+    });
+
+    // Botão Instagram
+    document.getElementById('btn-instagram').addEventListener('click', function() {
+        window.open('https://instagram.com/matheusbarbershop123', '_blank');
+    });
+
+    // Botão Voltar (Services -> Home)
+    document.getElementById('back-to-home').addEventListener('click', function() {
+        showScreen('home');
+    });
+
+    // Selecionar Serviço
+    document.querySelectorAll('.service-card').forEach(card => {
+        card.addEventListener('click', function() {
+            selectedService = JSON.parse(this.getAttribute('data-service'));
+            document.getElementById('selected-service-icon').textContent = selectedService.icon;
+            document.getElementById('selected-service-name').textContent = selectedService.name;
+            document.getElementById('selected-service-duration').textContent = selectedService.duration + ' • R$ ' + selectedService.price;
+            document.getElementById('selected-service-price').textContent = 'R$ ' + selectedService.price;
+            showScreen('datetime');
+            generateCalendar();
+        });
+    });
+
+    // Gerar Calendário
+    function generateCalendar() {
+        const calendar = document.getElementById('calendar');
+        calendar.innerHTML = '';
+        const today = new Date();
+        
+        for (let i = 0; i < 7; i++) {
+            const date = new Date(today);
+            date.setDate(today.getDate() + i);
+            
+            const dayBtn = document.createElement('div');
+            dayBtn.className = 'day-btn';
+            dayBtn.innerHTML = `
+                <div class="day-weekday">${date.toLocaleDateString('pt-BR', { weekday: 'short' })}</div>
+                <div class="day-number">${date.getDate()}</div>
+                <div class="day-month">${date.toLocaleDateString('pt-BR', { month: 'short' })}</div>
+            `;
+            
+            dayBtn.addEventListener('click', function() {
+                document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedDate = date;
+                generateTimeSlots();
+                document.getElementById('time-section').style.display = 'block';
+            });
+            
+            calendar.appendChild(dayBtn);
+        }
+    }
+
+    // Gerar Horários
+    function generateTimeSlots() {
+        const timegrid = document.getElementById('timegrid');
+        timegrid.innerHTML = '';
+        const times = ['09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30', '17:00', '17:30', '18:00', '18:30', '19:00', '19:30'];
+        
+        times.forEach(time => {
+            const timeBtn = document.createElement('div');
+            timeBtn.className = 'time-btn';
+            timeBtn.textContent = time;
+            
+            timeBtn.addEventListener('click', function() {
+                document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedTime = time;
+                document.getElementById('continue-btn').style.display = 'block';
+            });
+            
+            timegrid.appendChild(timeBtn);
+        });
+    }
+
+    // Botão Voltar (DateTime -> Services)
+    document.getElementById('back-to-services').addEventListener('click', function() {
+        showScreen('services');
+    });
+
+    // Botão Continuar (DateTime -> Customer)
+    document.getElementById('continue-btn').addEventListener('click', function() {
+        document.getElementById('summary-service').textContent = selectedService.name;
+        document.getElementById('summary-date').textContent = selectedDate.toLocaleDateString('pt-BR');
+        document.getElementById('summary-time').textContent = selectedTime;
+        document.getElementById('summary-price').textContent = 'R$ ' + selectedService.price;
+        showScreen('customer');
+    });
+
+    // Botão Voltar (Customer -> DateTime)
+    document.getElementById('back-to-datetime').addEventListener('click', function() {
+        showScreen('datetime');
+    });
+
+    // Confirmar Agendamento
+    document.getElementById('confirm-booking').addEventListener('click', function() {
+        const name = document.getElementById('customer-name').value;
+        const phone = document.getElementById('customer-phone').value;
+        const email = document.getElementById('customer-email').value;
+        
+        if (!name || !phone) {
+            alert('Por favor, preencha todos os campos obrigatórios');
+            return;
+        }
+        
+        customerData = { name, phone, email };
+        
+        document.getElementById('confirm-name').textContent = name;
+        document.getElementById('confirm-service').textContent = selectedService.name;
+        document.getElementById('confirm-date').textContent = selectedDate.toLocaleDateString('pt-BR');
+        document.getElementById('confirm-time').textContent = selectedTime;
+        document.getElementById('confirm-phone').textContent = phone;
+        
+        const message = `🔥 *NOVO AGENDAMENTO - MATHEUS BARBER SHOP* 🔥\n\n👤 *Cliente:* ${name}\n📞 *Telefone:* ${phone}\n${email ? `📧 *Email:* ${email}\n` : ''}\n💈 *Serviço:* ${selectedService.name}\n📅 *Data:* ${selectedDate.toLocaleDateString('pt-BR')}\n🕐 *Horário:* ${selectedTime}\n💰 *Valor:* R$ ${selectedService.price}\n\n✅ Agendamento confirmado!`;
+        
+        whatsappLink = `https://wa.me/5534991054546?text=${encodeURIComponent(message)}`;
+        
+        showScreen('confirmation');
+        setTimeout(() => window.open(whatsappLink, '_blank'), 1000);
+    });
+
+    // Botão WhatsApp Final
+    document.getElementById('final-whatsapp').addEventListener('click', function() {
+        window.open(whatsappLink, '_blank');
+    });
+
+    // Resetar Agendamento
+    document.getElementById('reset-booking').addEventListener('click', function() {
+        selectedService = {};
+        selectedDate = null;
+        selectedTime = null;
+        customerData = {};
+        document.getElementById('customer-name').value = '';
+        document.getElementById('customer-phone').value = '';
+        document.getElementById('customer-email').value = '';
+        showScreen('home');
+    });
 </script>
+```
+
 </body>
 </html>
