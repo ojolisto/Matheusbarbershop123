@@ -13,7 +13,7 @@
         .header p { color: #888; font-size: 14px; }
         .screen { display: none; }
         .screen.active { display: block; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .welcome { text-align: center; padding: 40px 20px; }
         .welcome .icon { font-size: 80px; margin-bottom: 20px; }
         .welcome h2 { font-size: 32px; margin-bottom: 15px; }
@@ -23,54 +23,281 @@
         .info-card .icon { font-size: 36px; margin-bottom: 10px; }
         .info-card .title { font-weight: bold; color: #000; margin-bottom: 5px; }
         .info-card .text { font-size: 12px; color: #333; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; transition: all 0.3s; margin-bottom: 15px; }
+        .btn { width: 100%; padding: 18px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
         .btn-primary { background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); color: #000; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); }
         .btn-whatsapp { background: #25d366; color: #fff; }
         .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #fff; }
-        .service-card { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); padding: 20px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #333; cursor: pointer; transition: all 0.3s; }
-        .service-card:hover { border-color: #d4af37; transform: translateY(-3px); }
+        .service-card { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); padding: 20px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #333; cursor: pointer; }
+        .service-card:hover { border-color: #d4af37; }
         .service-header { display: flex; align-items: center; justify-content: space-between; }
         .service-info { display: flex; align-items: center; gap: 15px; }
         .service-icon { font-size: 40px; }
-        .service-name { font-size: 20px; font-weight: bold; margin-bottom: 5px; }
+        .service-name { font-size: 20px; font-weight: bold; }
         .service-duration { font-size: 14px; color: #888; }
         .service-price { font-size: 28px; font-weight: bold; color: #d4af37; }
-        .back-btn { padding: 12px 20px; background: #2a2a2a; color: #fff; border: none; border-radius: 8px; cursor: pointer; margin-bottom: 20px; font-size: 16px; }
+        .back-btn { padding: 12px 20px; background: #2a2a2a; color: #fff; border: none; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
         .section-title { font-size: 24px; margin-bottom: 10px; }
         .section-subtitle { color: #888; margin-bottom: 25px; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 30px; }
-        .day-btn { padding: 12px 5px; background: #2a2a2a; border: 2px solid #333; border-radius: 10px; cursor: pointer; text-align: center; font-size: 12px; transition: all 0.3s; }
-        .day-btn:hover { border-color: #d4af37; }
-        .day-btn.selected { background: #d4af37; color: #000; border-color: #d4af37; }
-        .day-weekday { font-size: 10px; margin-bottom: 3px; }
-        .day-number { font-size: 18px; font-weight: bold; margin-bottom: 3px; }
-        .day-month { font-size: 10px; }
+        .day-btn { padding: 12px 5px; background: #2a2a2a; border: 2px solid #333; border-radius: 10px; cursor: pointer; text-align: center; font-size: 12px; }
+        .day-btn.selected { background: #d4af37; color: #000; }
         .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 30px; }
-        .time-btn { padding: 15px; background: #2a2a2a; border: 2px solid #333; border-radius: 10px; cursor: pointer; text-align: center; font-size: 16px; font-weight: bold; transition: all 0.3s; }
-        .time-btn:hover { border-color: #d4af37; }
-        .time-btn.selected { background: #d4af37; color: #000; border-color: #d4af37; }
-        .summary-box { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); padding: 20px; border-radius: 10px; border: 1px solid #333; margin-bottom: 25px; }
+        .time-btn { padding: 15px; background: #2a2a2a; border: 2px solid #333; border-radius: 10px; cursor: pointer; text-align: center; font-size: 16px; font-weight: bold; }
+        .time-btn.selected { background: #d4af37; color: #000; }
+        .summary-box { background: #2a2a2a; padding: 20px; border-radius: 10px; margin-bottom: 25px; }
         .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #333; }
-        .summary-row:last-child { border-bottom: none; padding-top: 12px; border-top: 2px solid #333; }
         .summary-label { color: #888; }
         .summary-value { font-weight: bold; }
-        .summary-price { font-size: 24px; color: #d4af37; }
         .form-group { margin-bottom: 20px; }
         .form-label { display: block; margin-bottom: 8px; font-weight: bold; }
         .form-input { width: 100%; padding: 15px; background: #2a2a2a; border: 2px solid #333; border-radius: 10px; color: #fff; font-size: 16px; }
-        .form-input:focus { outline: none; border-color: #d4af37; }
         .success-icon { font-size: 100px; color: #25d366; margin-bottom: 20px; }
-        .confirmation-box { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); padding: 25px; border-radius: 10px; border: 2px solid #d4af37; margin-bottom: 25px; }
-        .alert-box { background: rgba(37, 211, 102, 0.1); border: 1px solid rgba(37, 211, 102, 0.3); padding: 15px; border-radius: 10px; margin-bottom: 25px; text-align: center; color: #25d366; }
+        .confirmation-box { background: #2a2a2a; padding: 25px; border-radius: 10px; border: 2px solid #d4af37; margin-bottom: 25px; }
         .admin-login { max-width: 400px; margin: 100px auto; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
         .logout-btn { background: #dc3545; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .stat-card { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); padding: 20px; border-radius: 10px; border: 2px solid #333; text-align: center; }
-        .stat-number { font-size: 32px; font-weight: bold; color: #d4af37; margin-bottom: 5px; }
+        .stat-card { background: #2a2a2a; padding: 20px; border-radius: 10px; text-align: center; }
+        .stat-number { font-size: 32px; font-weight: bold; color: #d4af37; }
         .stat-label { color: #888; font-size: 14px; }
-        .filters { display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; }
-        .filter-select { padding: 10px 15px; background: #2a2a2a; border: 2px solid #333; border-radius: 8px; color: #fff; cursor: pointer; }
-        .booking-card { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); padding: 20px; border-radius: 10px; border: 2px solid #333; margin-bottom: 15px; }
-        .booking-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px​​​​​​​​​​​​​​​​
+        .booking-card { background: #2a2a2a; padding: 20px; border-radius: 10px; margin-bottom: 15px; }
+        .booking-header { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .booking-client { font-size: 18px; font-weight: bold; }
+        .booking-phone { color: #25d366; font-size: 14px; }
+        .booking-actions { display: flex; gap: 10px; margin-top: 15px; }
+        .action-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-confirm { background: #007bff; color: #fff; }
+        .btn-complete { background: #28a745; color: #fff; }
+        .btn-cancel { background: #dc3545; color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💈 Matheus Barber Shop</h1>
+        <p>Rio Verde - Goiás</p>
+    </div>
+    <div class="container" id="main-container"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAdmin = urlParams.get('admin') === 'true';
+        const ADMIN_PASSWORD = 'matheus123';
+        let selectedService = {}, selectedDate = null, selectedTime = null, isAdminLoggedIn = false;
+
+        const services = [
+            {id:1, name:'Cabelo', price:40, duration:'30 min', icon:'✂️'},
+            {id:2, name:'Corte Completo', price:60, duration:'45 min', icon:'💈'},
+            {id:3, name:'Barba', price:30, duration:'20 min', icon:'🪒'},
+            {id:4, name:'Sobrancelha', price:10, duration:'10 min', icon:'👁️'},
+            {id:5, name:'Luzes', price:80, duration:'60 min', icon:'⚡'},
+            {id:6, name:'Nevou', price:100, duration:'90 min', icon:'❄️'},
+            {id:7, name:'Pigmentação', price:40, duration:'30 min', icon:'🎨'}
+        ];
+
+        const timeSlots = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30'];
+
+        function getBookings() { return JSON.parse(localStorage.getItem('bookings') || '[]'); }
+        function saveBooking(b) { const bookings = getBookings(); bookings.push(b); localStorage.setItem('bookings', JSON.stringify(bookings)); }
+        function updateBooking(id, updates) { const bookings = getBookings(); const index = bookings.findIndex(b => b.id === id); if (index !== -1) { bookings[index] = {...bookings[index], ...updates}; localStorage.setItem('bookings', JSON.stringify(bookings)); }}
+        function deleteBooking(id) { localStorage.setItem('bookings', JSON.stringify(getBookings().filter(b => b.id !== id))); }
+
+        function loginAdmin() {
+            if (document.getElementById('admin-password').value === ADMIN_PASSWORD) { isAdminLoggedIn = true; render(); } 
+            else alert('Senha incorreta!');
+        }
+
+        function renderAdminLogin() {
+            document.getElementById('main-container').innerHTML = `
+                <div class="admin-login">
+                    <div class="welcome"><div class="icon">🔐</div><h2>Painel Admin</h2></div>
+                    <div class="form-group"><label class="form-label">Senha</label>
+                    <input type="password" id="admin-password" class="form-input"></div>
+                    <button class="btn btn-primary" onclick="loginAdmin()">Entrar</button>
+                    <button class="btn back-btn" onclick="location.href='?'">Voltar</button>
+                </div>`;
+        }
+
+        function renderAdminPanel() {
+            const bookings = getBookings();
+            const today = new Date().toDateString();
+            const todayBookings = bookings.filter(b => new Date(b.date).toDateString() === today);
+            const completed = bookings.filter(b => b.status === 'completed').length;
+            const revenue = bookings.filter(b => b.status === 'completed').reduce((sum, b) => sum + b.service.price, 0);
+
+            document.getElementById('main-container').innerHTML = `
+                <div class="admin-header"><h2>Painel Admin</h2><button class="logout-btn" onclick="location.href='?'">Sair</button></div>
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-number">${bookings.length}</div><div class="stat-label">Total</div></div>
+                    <div class="stat-card"><div class="stat-number">${todayBookings.length}</div><div class="stat-label">Hoje</div></div>
+                    <div class="stat-card"><div class="stat-number">${completed}</div><div class="stat-label">Atendidos</div></div>
+                    <div class="stat-card"><div class="stat-number">R$ ${revenue}</div><div class="stat-label">Faturamento</div></div>
+                </div>
+                <div id="bookings-list">${bookings.map(b => `
+                    <div class="booking-card">
+                        <div class="booking-header">
+                            <div><div class="booking-client">${b.customer.name}</div><div class="booking-phone">📱 ${b.customer.phone}</div></div>
+                        </div>
+                        <div>🔧 ${b.service.name} | 💰 R$ ${b.service.price}</div>
+                        <div>📅 ${new Date(b.date).toLocaleDateString('pt-BR')} | 🕐 ${b.time}</div>
+                        <div class="booking-actions">
+                            <button class="action-btn btn-confirm" onclick="updateBooking('${b.id}', {status:'confirmed'}); render()">Confirmar</button>
+                            <button class="action-btn btn-complete" onclick="updateBooking('${b.id}', {status:'completed'}); render()">Atendido</button>
+                            <button class="action-btn btn-cancel" onclick="if(confirm('Cancelar?')) { deleteBooking('${b.id}'); render(); }">Cancelar</button>
+                        </div>
+                    </div>
+                `).join('')}</div>`;
+        }
+
+        function renderClientApp() {
+            document.getElementById('main-container').innerHTML = `
+                <div id="client-screens">
+                    <div id="home" class="screen active">
+                        <div class="welcome"><div class="icon">💈</div><h2>Bem-vindo!</h2><p>Agende seu horário</p></div>
+                        <div class="info-cards">
+                            <div class="info-card"><div class="icon">🕐</div><div class="title">Horário</div><div class="text">Seg-Sáb 9h-20h</div></div>
+                            <div class="info-card"><div class="icon">📍</div><div class="title">Localização</div><div class="text">Rio Verde GO</div></div>
+                        </div>
+                        <button class="btn btn-primary" onclick="showScreen('services')">Agendar Agora</button>
+                        <button class="btn btn-whatsapp" onclick="open('https://wa.me/5534991054546')">📱 WhatsApp</button>
+                        <button class="btn btn-instagram" onclick="open('https://instagram.com/matheusbarbershop123')">📸 Instagram</button>
+                    </div>
+                    <div id="services" class="screen">
+                        <button class="back-btn" onclick="showScreen('home')">← Voltar</button>
+                        <h2 class="section-title">Escolha o Serviço</h2>
+                        <div id="services-list"></div>
+                    </div>
+                    <div id="datetime" class="screen">
+                        <button class="back-btn" onclick="showScreen('services')">← Voltar</button>
+                        <h2 class="section-title">Data e Horário</h2>
+                        <div class="summary-box">
+                            <div class="service-header">
+                                <div class="service-info"><div class="service-icon" id="sel-icon"></div><div><div class="service-name" id="sel-name"></div></div></div>
+                                <div class="service-price" id="sel-price"></div>
+                            </div>
+                        </div>
+                        <h3>📅 Dia</h3><div class="calendar-grid" id="calendar"></div>
+                        <div id="time-section" style="display:none"><h3>🕐 Horário</h3><div class="time-grid" id="timegrid"></div></div>
+                        <button class="btn btn-primary" id="continue-btn" style="display:none" onclick="showScreen('customer')">Continuar</button>
+                    </div>
+                    <div id="customer" class="screen">
+                        <button class="back-btn" onclick="showScreen('datetime')">← Voltar</button>
+                        <h2 class="section-title">Seus Dados</h2>
+                        <div class="summary-box">
+                            <div class="summary-row"><span class="summary-label">Serviço:</span><span id="sum-service"></span></div>
+                            <div class="summary-row"><span class="summary-label">Data:</span><span id="sum-date"></span></div>
+                            <div class="summary-row"><span class="summary-label">Horário:</span><span id="sum-time"></span></div>
+                            <div class="summary-row"><span class="summary-label">Total:</span><span id="sum-price"></span></div>
+                        </div>
+                        <div class="form-group"><label class="form-label">👤 Nome *</label><input type="text" id="customer-name" class="form-input"></div>
+                        <div class="form-group"><label class="form-label">📱 Telefone *</label><input type="tel" id="customer-phone" class="form-input"></div>
+                        <div class="form-group"><label class="form-label">📧 E-mail</label><input type="email" id="customer-email" class="form-input"></div>
+                        <button class="btn btn-primary" onclick="confirmBooking()">Confirmar</button>
+                    </div>
+                    <div id="confirmation" class="screen">
+                        <div class="welcome"><div class="success-icon">✅</div><h2>Confirmado!</h2></div>
+                        <div class="confirmation-box" id="confirm-details"></div>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp()">📱 Enviar WhatsApp</button>
+                        <button class="btn btn-primary" onclick="resetBooking()">Novo Agendamento</button>
+                    </div>
+                </div>`;
+            renderServices();
+        }
+
+        function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+
+        function renderServices() {
+            document.getElementById('services-list').innerHTML = services.map(s => `
+                <div class="service-card" onclick='selectService(${JSON.stringify(s)})'>
+                    <div class="service-header">
+                        <div class="service-info"><div class="service-icon">${s.icon}</div><div><div class="service-name">${s.name}</div><div class="service-duration">${s.duration}</div></div></div>
+                        <div class="service-price">R$ ${s.price}</div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function selectService(service) {
+            selectedService = service;
+            document.getElementById('sel-icon').textContent = service.icon;
+            document.getElementById('sel-name').textContent = service.name;
+            document.getElementById('sel-price').textContent = `R$ ${service.price}`;
+            generateCalendar();
+            showScreen('datetime');
+        }
+
+        function generateCalendar() {
+            const cal = document.getElementById('calendar');
+            const today = new Date();
+            const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+            cal.innerHTML = '';
+            for (let i = 0; i < 14; i++) {
+                const date = new Date(today); date.setDate(today.getDate() + i);
+                const div = document.createElement('div'); div.className = 'day-btn';
+                div.innerHTML = `<div>${days[date.getDay()]}</div><div style="font-size:18px;font-weight:bold">${date.getDate()}</div>`;
+                div.onclick = () => selectDate(date);
+                cal.appendChild(div);
+            }
+        }
+
+        function selectDate(date) {
+            selectedDate = date; selectedTime = null;
+            document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('selected'));
+            event.target.closest('.day-btn').classList.add('selected');
+            document.getElementById('time-section').style.display = 'block';
+            document.getElementById('timegrid').innerHTML = timeSlots.map(t => `<div class="time-btn" onclick="selectTime('${t}')">${t}</div>`).join('');
+        }
+
+        function selectTime(time) {
+            selectedTime = time;
+            document.querySelectorAll('.time-btn').forEach(t => t.classList.remove('selected'));
+            event.target.classList.add('selected');
+            document.getElementById('continue-btn').style.display = 'block';
+        }
+
+        function confirmBooking() {
+            const name = document.getElementById('customer-name').value;
+            const phone = document.getElementById('customer-phone').value;
+            const email = document.getElementById('customer-email').value;
+            if (!name || !phone) return alert('Preencha nome e telefone!');
+
+            const booking = {
+                id: Date.now().toString(),
+                service: selectedService,
+                date: selectedDate,
+                time: selectedTime,
+                customer: {name, phone, email},
+                status: 'pending'
+            };
+            saveBooking(booking);
+
+            document.getElementById('sum-service').textContent = selectedService.name;
+            document.getElementById('sum-date').textContent = new Date(selectedDate).toLocaleDateString('pt-BR');
+            document.getElementById('sum-time').textContent = selectedTime;
+            document.getElementById('sum-price').textContent = `R$ ${selectedService.price}`;
+            document.getElementById('confirm-details').innerHTML = `
+                <div class="summary-row"><span>Serviço:</span><span>${selectedService.name}</span></div>
+                <div class="summary-row"><span>Data:</span><span>${new Date(selectedDate).toLocaleDateString('pt-BR')}</span></div>
+                <div class="summary-row"><span>Horário:</span><span>${selectedTime}</span></div>
+                <div class="summary-row"><span>Total:</span><span>R$ ${selectedService.price}</span></div>`;
+            showScreen('customer');
+            setTimeout(() => showScreen('confirmation'), 100);
+        }
+
+        function sendWhatsApp() {
+            const msg = `Olá! Confirmação de agendamento:\n\n📅 Data: ${new Date(selectedDate).toLocaleDateString('pt-BR')}\n🕐 Horário: ${selectedTime}\n💈 Serviço: ${selectedService.name}\n💰 Valor: R$ ${selectedService.price}`;
+            window.open(`https://wa.me/5534991054546?text=${encodeURIComponent(msg)}`);
+        }
+
+        function resetBooking() {
+            selectedService = {}; selectedDate = null; selectedTime = null;
+            showScreen('home');
+        }
+
+        function render() {
+            if (isAdmin) { if (!isAdminLoggedIn) renderAdminLogin(); else renderAdminPanel(); }
+            else renderClientApp();
+        }
+
+        render();
+    </script>
+</body>
+</html>
