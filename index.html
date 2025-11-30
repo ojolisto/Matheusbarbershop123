@@ -27,6 +27,7 @@
         .btn-primary { background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); color: #000; }
         .btn-whatsapp { background: #25d366; color: #fff; }
         .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #fff; }
+        .btn-admin { background: #6c757d; color: #fff; margin-top: 30px; }
         .service-card { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); padding: 20px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #333; cursor: pointer; }
         .service-card:hover { border-color: #d4af37; }
         .service-header { display: flex; align-items: center; justify-content: space-between; }
@@ -109,11 +110,17 @@
         function renderAdminLogin() {
             document.getElementById('main-container').innerHTML = `
                 <div class="admin-login">
-                    <div class="welcome"><div class="icon">🔐</div><h2>Painel Admin</h2></div>
-                    <div class="form-group"><label class="form-label">Senha</label>
-                    <input type="password" id="admin-password" class="form-input"></div>
+                    <div class="welcome">
+                        <div class="icon">🔐</div>
+                        <h2>Painel Administrativo</h2>
+                        <p>Digite a senha para acessar</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Senha</label>
+                        <input type="password" id="admin-password" class="form-input" placeholder="Digite a senha">
+                    </div>
                     <button class="btn btn-primary" onclick="loginAdmin()">Entrar</button>
-                    <button class="btn back-btn" onclick="location.href='?'">Voltar</button>
+                    <button class="btn back-btn" onclick="location.href='?'">Voltar ao Site</button>
                 </div>`;
         }
 
@@ -125,91 +132,153 @@
             const revenue = bookings.filter(b => b.status === 'completed').reduce((sum, b) => sum + b.service.price, 0);
 
             document.getElementById('main-container').innerHTML = `
-                <div class="admin-header"><h2>Painel Admin</h2><button class="logout-btn" onclick="location.href='?'">Sair</button></div>
+                <div class="admin-header">
+                    <h2>Painel Administrativo</h2>
+                    <button class="logout-btn" onclick="location.href='?'">Sair</button>
+                </div>
                 <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-number">${bookings.length}</div><div class="stat-label">Total</div></div>
+                    <div class="stat-card"><div class="stat-number">${bookings.length}</div><div class="stat-label">Total de Agendamentos</div></div>
                     <div class="stat-card"><div class="stat-number">${todayBookings.length}</div><div class="stat-label">Hoje</div></div>
                     <div class="stat-card"><div class="stat-number">${completed}</div><div class="stat-label">Atendidos</div></div>
                     <div class="stat-card"><div class="stat-number">R$ ${revenue}</div><div class="stat-label">Faturamento</div></div>
                 </div>
-                <div id="bookings-list">${bookings.map(b => `
-                    <div class="booking-card">
-                        <div class="booking-header">
-                            <div><div class="booking-client">${b.customer.name}</div><div class="booking-phone">📱 ${b.customer.phone}</div></div>
+                <div id="bookings-list">
+                    ${bookings.length === 0 ? '<p style="text-align:center;color:#888;padding:40px">Nenhum agendamento ainda</p>' : bookings.map(b => `
+                        <div class="booking-card">
+                            <div class="booking-header">
+                                <div>
+                                    <div class="booking-client">${b.customer.name}</div>
+                                    <div class="booking-phone">📱 ${b.customer.phone}</div>
+                                </div>
+                            </div>
+                            <div style="margin-bottom:10px">
+                                <div>🔧 <strong>${b.service.name}</strong> | 💰 <strong>R$ ${b.service.price}</strong></div>
+                                <div>📅 ${new Date(b.date).toLocaleDateString('pt-BR')} | 🕐 ${b.time}</div>
+                            </div>
+                            <div class="booking-actions">
+                                <button class="action-btn btn-confirm" onclick="updateBooking('${b.id}', {status:'confirmed'}); render()">Confirmar</button>
+                                <button class="action-btn btn-complete" onclick="updateBooking('${b.id}', {status:'completed'}); render()">Atendido</button>
+                                <button class="action-btn btn-cancel" onclick="if(confirm('Cancelar agendamento?')) { deleteBooking('${b.id}'); render(); }">Cancelar</button>
+                            </div>
                         </div>
-                        <div>🔧 ${b.service.name} | 💰 R$ ${b.service.price}</div>
-                        <div>📅 ${new Date(b.date).toLocaleDateString('pt-BR')} | 🕐 ${b.time}</div>
-                        <div class="booking-actions">
-                            <button class="action-btn btn-confirm" onclick="updateBooking('${b.id}', {status:'confirmed'}); render()">Confirmar</button>
-                            <button class="action-btn btn-complete" onclick="updateBooking('${b.id}', {status:'completed'}); render()">Atendido</button>
-                            <button class="action-btn btn-cancel" onclick="if(confirm('Cancelar?')) { deleteBooking('${b.id}'); render(); }">Cancelar</button>
-                        </div>
-                    </div>
-                `).join('')}</div>`;
+                    `).join('')}
+                </div>`;
         }
 
         function renderClientApp() {
             document.getElementById('main-container').innerHTML = `
                 <div id="client-screens">
                     <div id="home" class="screen active">
-                        <div class="welcome"><div class="icon">💈</div><h2>Bem-vindo!</h2><p>Agende seu horário</p></div>
+                        <div class="welcome">
+                            <div class="icon">💈</div>
+                            <h2>Bem-vindo!</h2>
+                            <p>Agende seu horário na melhor barbearia</p>
+                        </div>
                         <div class="info-cards">
-                            <div class="info-card"><div class="icon">🕐</div><div class="title">Horário</div><div class="text">Seg-Sáb 9h-20h</div></div>
-                            <div class="info-card"><div class="icon">📍</div><div class="title">Localização</div><div class="text">Rio Verde GO</div></div>
+                            <div class="info-card">
+                                <div class="icon">🕐</div>
+                                <div class="title">Horário</div>
+                                <div class="text">Seg-Sáb<br>9h-20h</div>
+                            </div>
+                            <div class="info-card">
+                                <div class="icon">📍</div>
+                                <div class="title">Localização</div>
+                                <div class="text">Rio Verde<br>Goiás</div>
+                            </div>
                         </div>
                         <button class="btn btn-primary" onclick="showScreen('services')">Agendar Agora</button>
                         <button class="btn btn-whatsapp" onclick="open('https://wa.me/5534991054546')">📱 WhatsApp</button>
                         <button class="btn btn-instagram" onclick="open('https://instagram.com/matheusbarbershop123')">📸 Instagram</button>
+                        <button class="btn btn-admin" onclick="location.href='?admin=true'">🔐 Acesso Admin</button>
                     </div>
+
                     <div id="services" class="screen">
                         <button class="back-btn" onclick="showScreen('home')">← Voltar</button>
                         <h2 class="section-title">Escolha o Serviço</h2>
+                        <p class="section-subtitle">Selecione o serviço desejado</p>
                         <div id="services-list"></div>
                     </div>
+
                     <div id="datetime" class="screen">
                         <button class="back-btn" onclick="showScreen('services')">← Voltar</button>
                         <h2 class="section-title">Data e Horário</h2>
+                        <p class="section-subtitle">Escolha o melhor dia e horário</p>
                         <div class="summary-box">
                             <div class="service-header">
-                                <div class="service-info"><div class="service-icon" id="sel-icon"></div><div><div class="service-name" id="sel-name"></div></div></div>
+                                <div class="service-info">
+                                    <div class="service-icon" id="sel-icon"></div>
+                                    <div>
+                                        <div class="service-name" id="sel-name"></div>
+                                        <div class="service-duration" id="sel-duration"></div>
+                                    </div>
+                                </div>
                                 <div class="service-price" id="sel-price"></div>
                             </div>
                         </div>
-                        <h3>📅 Dia</h3><div class="calendar-grid" id="calendar"></div>
-                        <div id="time-section" style="display:none"><h3>🕐 Horário</h3><div class="time-grid" id="timegrid"></div></div>
+                        <h3 style="margin-bottom:15px">📅 Selecione o Dia</h3>
+                        <div class="calendar-grid" id="calendar"></div>
+                        <div id="time-section" style="display:none">
+                            <h3 style="margin-bottom:15px">🕐 Selecione o Horário</h3>
+                            <div class="time-grid" id="timegrid"></div>
+                        </div>
                         <button class="btn btn-primary" id="continue-btn" style="display:none" onclick="showScreen('customer')">Continuar</button>
                     </div>
+
                     <div id="customer" class="screen">
                         <button class="back-btn" onclick="showScreen('datetime')">← Voltar</button>
                         <h2 class="section-title">Seus Dados</h2>
+                        <p class="section-subtitle">Preencha suas informações</p>
                         <div class="summary-box">
-                            <div class="summary-row"><span class="summary-label">Serviço:</span><span id="sum-service"></span></div>
-                            <div class="summary-row"><span class="summary-label">Data:</span><span id="sum-date"></span></div>
-                            <div class="summary-row"><span class="summary-label">Horário:</span><span id="sum-time"></span></div>
-                            <div class="summary-row"><span class="summary-label">Total:</span><span id="sum-price"></span></div>
+                            <div class="summary-row"><span class="summary-label">Serviço:</span><span class="summary-value" id="sum-service"></span></div>
+                            <div class="summary-row"><span class="summary-label">Data:</span><span class="summary-value" id="sum-date"></span></div>
+                            <div class="summary-row"><span class="summary-label">Horário:</span><span class="summary-value" id="sum-time"></span></div>
+                            <div class="summary-row"><span class="summary-label">Total:</span><span class="summary-value" id="sum-price"></span></div>
                         </div>
-                        <div class="form-group"><label class="form-label">👤 Nome *</label><input type="text" id="customer-name" class="form-input"></div>
-                        <div class="form-group"><label class="form-label">📱 Telefone *</label><input type="tel" id="customer-phone" class="form-input"></div>
-                        <div class="form-group"><label class="form-label">📧 E-mail</label><input type="email" id="customer-email" class="form-input"></div>
-                        <button class="btn btn-primary" onclick="confirmBooking()">Confirmar</button>
+                        <div class="form-group">
+                            <label class="form-label">👤 Nome Completo *</label>
+                            <input type="text" id="customer-name" class="form-input" placeholder="Seu nome">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">📱 Telefone *</label>
+                            <input type="tel" id="customer-phone" class="form-input" placeholder="(34) 99999-9999">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">📧 E-mail (opcional)</label>
+                            <input type="email" id="customer-email" class="form-input" placeholder="seu@email.com">
+                        </div>
+                        <button class="btn btn-primary" onclick="confirmBooking()">Confirmar Agendamento</button>
                     </div>
+
                     <div id="confirmation" class="screen">
-                        <div class="welcome"><div class="success-icon">✅</div><h2>Confirmado!</h2></div>
+                        <div class="welcome">
+                            <div class="success-icon">✅</div>
+                            <h2>Agendamento Confirmado!</h2>
+                            <p>Seu horário foi reservado com sucesso</p>
+                        </div>
                         <div class="confirmation-box" id="confirm-details"></div>
-                        <button class="btn btn-whatsapp" onclick="sendWhatsApp()">📱 Enviar WhatsApp</button>
-                        <button class="btn btn-primary" onclick="resetBooking()">Novo Agendamento</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp()">📱 Enviar Confirmação WhatsApp</button>
+                        <button class="btn btn-primary" onclick="resetBooking()">Fazer Novo Agendamento</button>
                     </div>
                 </div>`;
             renderServices();
         }
 
-        function showScreen(id) { document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+        function showScreen(id) { 
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+        }
 
         function renderServices() {
             document.getElementById('services-list').innerHTML = services.map(s => `
                 <div class="service-card" onclick='selectService(${JSON.stringify(s)})'>
                     <div class="service-header">
-                        <div class="service-info"><div class="service-icon">${s.icon}</div><div><div class="service-name">${s.name}</div><div class="service-duration">${s.duration}</div></div></div>
+                        <div class="service-info">
+                            <div class="service-icon">${s.icon}</div>
+                            <div>
+                                <div class="service-name">${s.name}</div>
+                                <div class="service-duration">${s.duration}</div>
+                            </div>
+                        </div>
                         <div class="service-price">R$ ${s.price}</div>
                     </div>
                 </div>`).join('');
@@ -219,6 +288,7 @@
             selectedService = service;
             document.getElementById('sel-icon').textContent = service.icon;
             document.getElementById('sel-name').textContent = service.name;
+            document.getElementById('sel-duration').textContent = service.duration;
             document.getElementById('sel-price').textContent = `R$ ${service.price}`;
             generateCalendar();
             showScreen('datetime');
@@ -228,22 +298,28 @@
             const cal = document.getElementById('calendar');
             const today = new Date();
             const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+            const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
             cal.innerHTML = '';
+            
             for (let i = 0; i < 14; i++) {
-                const date = new Date(today); date.setDate(today.getDate() + i);
-                const div = document.createElement('div'); div.className = 'day-btn';
-                div.innerHTML = `<div>${days[date.getDay()]}</div><div style="font-size:18px;font-weight:bold">${date.getDate()}</div>`;
+                const date = new Date(today); 
+                date.setDate(today.getDate() + i);
+                const div = document.createElement('div'); 
+                div.className = 'day-btn';
+                div.innerHTML = `<div style="font-size:10px;margin-bottom:3px">${days[date.getDay()]}</div><div style="font-size:18px;font-weight:bold;margin-bottom:3px">${date.getDate()}</div><div style="font-size:10px">${months[date.getMonth()]}</div>`;
                 div.onclick = () => selectDate(date);
                 cal.appendChild(div);
             }
         }
 
         function selectDate(date) {
-            selectedDate = date; selectedTime = null;
+            selectedDate = date; 
+            selectedTime = null;
             document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('selected'));
             event.target.closest('.day-btn').classList.add('selected');
             document.getElementById('time-section').style.display = 'block';
             document.getElementById('timegrid').innerHTML = timeSlots.map(t => `<div class="time-btn" onclick="selectTime('${t}')">${t}</div>`).join('');
+            document.getElementById('continue-btn').style.display = 'none';
         }
 
         function selectTime(time) {
@@ -251,50 +327,65 @@
             document.querySelectorAll('.time-btn').forEach(t => t.classList.remove('selected'));
             event.target.classList.add('selected');
             document.getElementById('continue-btn').style.display = 'block';
+            
+            document.getElementById('sum-service').textContent = selectedService.name;
+            document.getElementById('sum-date').textContent = new Date(selectedDate).toLocaleDateString('pt-BR');
+            document.getElementById('sum-time').textContent = selectedTime;
+            document.getElementById('sum-price').textContent = `R$ ${selectedService.price}`;
         }
 
         function confirmBooking() {
             const name = document.getElementById('customer-name').value;
             const phone = document.getElementById('customer-phone').value;
             const email = document.getElementById('customer-email').value;
-            if (!name || !phone) return alert('Preencha nome e telefone!');
+            
+            if (!name || !phone) {
+                alert('Por favor, preencha nome e telefone!');
+                return;
+            }
 
             const booking = {
                 id: Date.now().toString(),
                 service: selectedService,
-                date: selectedDate,
+                date: selectedDate.toISOString(),
                 time: selectedTime,
                 customer: {name, phone, email},
-                status: 'pending'
+                status: 'pending',
+                createdAt: new Date().toISOString()
             };
+            
             saveBooking(booking);
 
-            document.getElementById('sum-service').textContent = selectedService.name;
-            document.getElementById('sum-date').textContent = new Date(selectedDate).toLocaleDateString('pt-BR');
-            document.getElementById('sum-time').textContent = selectedTime;
-            document.getElementById('sum-price').textContent = `R$ ${selectedService.price}`;
             document.getElementById('confirm-details').innerHTML = `
-                <div class="summary-row"><span>Serviço:</span><span>${selectedService.name}</span></div>
-                <div class="summary-row"><span>Data:</span><span>${new Date(selectedDate).toLocaleDateString('pt-BR')}</span></div>
-                <div class="summary-row"><span>Horário:</span><span>${selectedTime}</span></div>
-                <div class="summary-row"><span>Total:</span><span>R$ ${selectedService.price}</span></div>`;
-            showScreen('customer');
-            setTimeout(() => showScreen('confirmation'), 100);
+                <div class="summary-row"><span class="summary-label">Nome:</span><span class="summary-value">${name}</span></div>
+                <div class="summary-row"><span class="summary-label">Telefone:</span><span class="summary-value">${phone}</span></div>
+                <div class="summary-row"><span class="summary-label">Serviço:</span><span class="summary-value">${selectedService.name}</span></div>
+                <div class="summary-row"><span class="summary-label">Data:</span><span class="summary-value">${new Date(selectedDate).toLocaleDateString('pt-BR')}</span></div>
+                <div class="summary-row"><span class="summary-label">Horário:</span><span class="summary-value">${selectedTime}</span></div>
+                <div class="summary-row"><span class="summary-label">Total:</span><span class="summary-value" style="font-size:24px;color:#d4af37">R$ ${selectedService.price}</span></div>`;
+            
+            showScreen('confirmation');
         }
 
         function sendWhatsApp() {
-            const msg = `Olá! Confirmação de agendamento:\n\n📅 Data: ${new Date(selectedDate).toLocaleDateString('pt-BR')}\n🕐 Horário: ${selectedTime}\n💈 Serviço: ${selectedService.name}\n💰 Valor: R$ ${selectedService.price}`;
+            const msg = `*Confirmação de Agendamento - Matheus Barber Shop*\n\n👤 Nome: ${document.getElementById('customer-name').value}\n📅 Data: ${new Date(selectedDate).toLocaleDateString('pt-BR')}\n🕐 Horário: ${selectedTime}\n💈 Serviço: ${selectedService.name}\n💰 Valor: R$ ${selectedService.price}\n\nObrigado pela preferência!`;
             window.open(`https://wa.me/5534991054546?text=${encodeURIComponent(msg)}`);
         }
 
         function resetBooking() {
-            selectedService = {}; selectedDate = null; selectedTime = null;
+            selectedService = {}; 
+            selectedDate = null; 
+            selectedTime = null;
             showScreen('home');
         }
 
         function render() {
-            if (isAdmin) { if (!isAdminLoggedIn) renderAdminLogin(); else renderAdminPanel(); }
-            else renderClientApp();
+            if (isAdmin) { 
+                if (!isAdminLoggedIn) renderAdminLogin(); 
+                else renderAdminPanel(); 
+            } else {
+                renderClientApp();
+            }
         }
 
         render();
