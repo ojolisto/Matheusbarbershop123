@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matheus Barber Shop</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1a1a1a 0%, #000 100%); color: #fff; min-height: 100vh; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { background: rgba(0,0,0,0.5); padding: 20px; text-align: center; border-bottom: 2px solid #d4af37; margin-bottom: 30px; }
+        .header h1 { color: #d4af37; font-size: 24px; margin-bottom: 5px; }
+        .header p { color: #888; font-size: 14px; }
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .welcome { text-align: center; padding: 40px 20px; }
+        .welcome .icon { font-size: 80px; margin-bottom: 20px; }
+        .welcome h2 { font-size: 32px; margin-bottom: 15px; }
+        .welcome p { color: #888; margin-bottom: 30px; }
+        .info-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        .info-card { background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); padding: 25px; border-radius: 15px; text-align: center; }
+        .info-card .icon { font-size: 36px; margin-bottom: 10px; }
+        .info-card .title { font-weight: bold; color: #000; margin-bottom: 5px; }
+        .info-card .text { font-size: 12px; color: #333; }
+        .btn { width: 100%; padding: 18px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
+        .btn-primary { background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); color: #000; }
+        .btn-whatsapp { background: #25d366; color: #fff; }
+        .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #fff; }
+        .service-card { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); padding: 20px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #333; cursor: pointer; position: relative; }
+        .service-card:hover { border-color: #d4af37; }
+        .service-image { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; }
+        .service-header { display: flex; align-items: center; justify-content: space-between; }
+        .service-info { display: flex; align-items: center; gap: 15px; }
+        .service-icon { font-size: 40px; }
+        .service-name { font-size: 20px; font-weight: bold; }
+        .service-duration { font-size: 14px; color: #888; }
+        .service-price { font-size: 28px; font-weight: bold; color: #d4af37; }
+        .back-btn { padding: 12px 20px; background: #2a2a2a; color: #fff; border: none; border-radius: 8px; cursor: pointer; margin-bottom: 20px; }
+        .section-title { font-size: 24px; margin-bottom: 10px; }
+        .section-subtitle { color: #888; margin-bottom: 25px; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 30px; }
+        .day-btn { padding: 12px 5px; background: #2a2a2a; border: 2px solid #333; border-radius: 10px; cursor: pointer; text-align: center; font-size: 12px; }
+        .day-btn.selected { background: #d4af37; color: #000; }
+        .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 30px; }
+        .time-btn { padding: 15px; background: #2a2a2a; border: 2px solid #333; border-radius: 10px; cursor: pointer; text-align: center; font-size: 16px; font-weight: bold; }
+        .time-btn.selected { background: #d4af37; color: #000; }
+        .summary-box { background: #2a2a2a; padding: 20px; border-radius: 10px; margin-bottom: 25px; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #333; }
+        .summary-label { color: #888; }
+        .summary-value { font-weight: bold; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: bold; }
+        .form-input { width: 100%; padding: 15px; background: #2a2a2a; border: 2px solid #333; border-radius: 10px; color: #fff; font-size: 16px; }
+        .success-icon { font-size: 100px; color: #25d366; margin-bottom: 20px; }
+        .confirmation-box { background: #2a2a2a; padding: 25px; border-radius: 10px; border: 2px solid #d4af37; margin-bottom: 25px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💈 Matheus Barber Shop</h1>
+        <p>Rio Verde - Goiás</p>
+    </div>
+    <div class="container" id="main-container"></div>
+
+    <script>
+        let selectedService = {}, selectedDate = null, selectedTime = null;
+
+        const defaultServices = [
+            {id:1, name:'Cabelo', price:40, duration:'30 min', icon:'✂️', image:''},
+            {id:2, name:'Corte Completo', price:60, duration:'45 min', icon:'💈', image:''},
+            {id:3, name:'Barba', price:30, duration:'20 min', icon:'🪒', image:''},
+            {id:4, name:'Sobrancelha', price:10, duration:'10 min', icon:'👁️', image:''},
+            {id:5, name:'Luzes', price:80, duration:'60 min', icon:'⚡', image:''},
+            {id:6, name:'Nevou', price:100, duration:'90 min', icon:'❄️', image:''},
+            {id:7, name:'Pigmentação', price:40, duration:'30 min', icon:'🎨', image:''}
+        ];
+
+        const timeSlots = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30'];
+
+        function getServices() {
+            const saved = localStorage.getItem('services');
+            return saved ? JSON.parse(saved) : defaultServices;
+        }
+
+        function getBookings() { return JSON.parse(localStorage.getItem('bookings') || '[]'); }
+        function saveBooking(b) { const bookings = getBookings(); bookings.push(b); localStorage.setItem('bookings', JSON.stringify(bookings)); }
+
+        function renderClientApp() {
+            const services = getServices();
+            
+            document.getElementById('main-container').innerHTML = `
+                <div id="client-screens">
+                    <div id="home" class="screen active">
+                        <div class="welcome">
+                            <div class="icon">💈</div>
+                            <h2>Bem-vindo!</h2>
+                            <p>Agende seu horário na melhor barbearia</p>
+                        </div>
+                        <div class="info-cards">
+                            <div class="info-card">
+                                <div class="icon">🕐</div>
+                                <div class="title">Horário</div>
+                                <div class="text">Seg-Sáb<br>9h-20h</div>
+                            </div>
+                            <div class="info-card">
+                                <div class="icon">📍</div>
+                                <div class="title">Localização</div>
+                                <div class="text">Rio Verde<br>Goiás</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="showScreen('services')">Agendar Agora</button>
+                        <button class="btn btn-whatsapp" onclick="open('https://wa.me/5534991054546')">📱 WhatsApp</button>
+                        <button class="btn btn-instagram" onclick="open('https://instagram.com/matheusbarbershop123')">📸 Instagram</button>
+                    </div>
+
+                    <div id="services" class="screen">
+                        <button class="back-btn" onclick="showScreen('home')">← Voltar</button>
+                        <h2 class="section-title">Escolha o Serviço</h2>
+                        <p class="section-subtitle">Selecione o serviço desejado</p>
+                        <div id="services-list"></div>
+                    </div>
+
+                    <div id="datetime" class="screen">
+                        <button class="back-btn" onclick="showScreen('services')">← Voltar</button>
+                        <h2 class="section-title">Data e Horário</h2>
+                        <div class="summary-box">
+                            <div class="service-header">
+                                <div class="service-info">
+                                    <div class="service-icon" id="sel-icon"></div>
+                                    <div>
+                                        <div class="service-name" id="sel-name"></div>
+                                        <div class="service-duration" id="sel-duration"></div>
+                                    </div>
+                                </div>
+                                <div class="service-price" id="sel-price"></div>
+                            </div>
+                        </div>
+                        <h3 style="margin-bottom:15px">📅 Selecione o Dia</h3>
+                        <div class="calendar-grid" id="calendar"></div>
+                        <div id="time-section" style="display:none">
+                            <h3 style="margin-bottom:15px">🕐 Selecione o Horário</h3>
+                            <div class="time-grid" id="timegrid"></div>
+                        </div>
+                        <button class="btn btn-primary" id="continue-btn" style="display:none" onclick="showScreen('customer')">Continuar</button>
+                    </div>
+
+                    <div id="customer" class="screen">
+                        <button class="back-btn" onclick="showScreen('datetime')">← Voltar</button>
+                        <h2 class="section-title">Seus Dados</h2>
+                        <div class="summary-box">
+                            <div class="summary-row"><span class="summary-label">Serviço:</span><span class="summary-value" id="sum-service"></span></div>
+                            <div class="summary-row"><span class="summary-label">Data:</span><span class="summary-value" id="sum-date"></span></div>
+                            <div class="summary-row"><span class="summary-label">Horário:</span><span class="summary-value" id="sum-time"></span></div>
+                            <div class="summary-row"><span class="summary-label">Total:</span><span class="summary-value" id="sum-price"></span></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">👤 Nome Completo *</label>
+                            <input type="text" id="customer-name" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">📱 Telefone *</label>
+                            <input type="tel" id="customer-phone" class="form-input" placeholder="(34) 99999-9999">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">📧 E-mail</label>
+                            <input type="email" id="customer-email" class="form-input">
+                        </div>
+                        <button class="btn btn-primary" onclick="confirmBooking()">Confirmar Agendamento</button>
+                    </div>
+
+                    <div id="confirmation" class="screen">
+                        <div class="welcome">
+                            <div class="success-icon">✅</div>
+                            <h2>Confirmado!</h2>
+                            <p>Seu horário foi reservado</p>
+                        </div>
+                        <div class="confirmation-box" id="confirm-details"></div>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp()">📱 Enviar WhatsApp</button>
+                        <button class="btn btn-primary" onclick="resetBooking()">Novo Agendamento</button>
+                    </div>
+                </div>`;
+            renderServices();
+        }
+
+        function showScreen(id) { 
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active')); 
+            document.getElementById(id).classList.add('active'); 
+        }
+
+        function renderServices() {
+            const services = getServices();
+            document.getElementById('services-list').innerHTML = services.map(s => `
+                <div class="service-card" onclick='selectService(${JSON.stringify(s).replace(/'/g, "&apos;")})'>
+                    ${s.image ? `<img src="${s.image}" class="service-image" alt="${s.name}">` : ''}
+                    <div class="service-header">
+                        <div class="service-info">
+                            <div class="service-icon">${s.icon}</div>
+                            <div>
+                                <div class="service-name">${s.name}</div>
+                                <div class="service-duration">${s.duration}</div>
+                            </div>
+                        </div>
+                        <div class="service-price">R$ ${s.price}</div>
+                    </div>
+                </div>`).join('');
+        }
+
+        function selectService(service) {
+            selectedService = service;
+            document.getElementById('sel-icon').textContent = service.icon;
+            document.getElementById('sel-name').textContent = service.name;
+            document.getElementById('sel-duration').textContent = service.duration;
+            document.getElementById('sel-price').textContent = `R$ ${service.price}`;
+            generateCalendar();
+            showScreen('datetime');
+        }
+
+        function generateCalendar() {
+            const cal = document.getElementById('calendar');
+            const today = new Date();
+            const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+            const months = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+            cal.innerHTML = '';
+            
+            for (let i = 0; i < 14; i++) {
+                const date = new Date(today); 
+                date.setDate(today.getDate() + i);
+                const div = document.createElement('div'); 
+                div.className = 'day-btn';
+                div.innerHTML = `<div style="font-size:10px">${days[date.getDay()]}</div><div style="font-size:18px;font-weight:bold;margin:3px 0">${date.getDate()}</div><div style="font-size:10px">${months[date.getMonth()]}</div>`;
+                div.onclick = () => selectDate(date);
+                cal.appendChild(div);
+            }
+        }
+
+        function selectDate(date) {
+            selectedDate = date; 
+            selectedTime = null;
+            document.querySelectorAll('.day-btn').forEach(d => d.classList.remove('selected'));
+            event.target.closest('.day-btn').classList.add('selected');
+            document.getElementById('time-section').style.display = 'block';
+            document.getElementById('timegrid').innerHTML = timeSlots.map(t => `<div class="time-btn" onclick="selectTime('${t}')">${t}</div>`).join('');
+            document.getElementById('continue-btn').style.display = 'none';
+        }
+
+        function selectTime(time) {
+            selectedTime = time;
+            document.querySelectorAll('.time-btn').forEach(t => t.classList.remove('selected'));
+            event.target.classList.add('selected');
+            document.getElementById('continue-btn').style.display = 'block';
+            
+            document.getElementById('sum-service').textContent = selectedService.name;
+            document.getElementById('sum-date').textContent = new Date(selectedDate).toLocaleDateString('pt-BR');
+            document.getElementById('sum-time').textContent = selectedTime;
+            document.getElementById('sum-price').textContent = `R$ ${selectedService.price}`;
+        }
+
+        function confirmBooking() {
+            const name = document.getElementById('customer-name').value;
+            const phone = document.getElementById('customer-phone').value;
+            const email = document.getElementById('customer-email').value;
+            
+            if (!name || !phone) {
+                alert('Preencha nome e telefone!');
+                return;
+            }
+
+            const booking = {
+                id: Date.now().toString(),
+                service: selectedService,
+                date: selectedDate.toISOString(),
+                time: selectedTime,
+                customer: {name, phone, email},
+                status: 'pending'
+            };
+            
+            saveBooking(booking);
+
+            document.getElementById('confirm-details').innerHTML = `
+                <div class="summary-row"><span class="summary-label">Nome:</span><span class="summary-value">${name}</span></div>
+                <div class="summary-row"><span class="summary-label">Serviço:</span><span class="summary-value">${selectedService.name}</span></div>
+                <div class="summary-row"><span class="summary-label">Data:</span><span class="summary-value">${new Date(selectedDate).toLocaleDateString('pt-BR')}</span></div>
+                <div class="summary-row"><span class="summary-label">Horário:</span><span class="summary-value">${selectedTime}</span></div>
+                <div class="summary-row"><span class="summary-label">Total:</span><span style="font-size:24px;color:#d4af37">R$ ${selectedService.price}</span></div>`;
+            
+            showScreen('confirmation');
+        }
+
+        function sendWhatsApp() {
+            const msg = `*Confirmação - Matheus Barber Shop*\n\n👤 ${document.getElementById('customer-name').value}\n📅 ${new Date(selectedDate).toLocaleDateString('pt-BR')}\n🕐 ${selectedTime}\n💈 ${selectedService.name}\n💰 R$ ${selectedService.price}`;
+            window.open(`https://wa.me/5534991054546?text=${encodeURIComponent(msg)}`);
+        }
+
+        function resetBooking() {
+            selectedService = {}; 
+            selectedDate = null; 
+            selectedTime = null;
+            showScreen('home');
+        }
+
+        renderClientApp();
+    </script>
+</body>
+</html>
