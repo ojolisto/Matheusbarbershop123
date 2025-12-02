@@ -27,9 +27,9 @@
         .btn-primary { background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); color: #000; }
         .btn-whatsapp { background: #25d366; color: #fff; }
         .btn-instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: #fff; }
-        .btn-admin { background: #6c757d; color: #fff; margin-top: 30px; }
-        .service-card { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); padding: 20px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #333; cursor: pointer; }
+        .service-card { background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%); padding: 20px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #333; cursor: pointer; position: relative; }
         .service-card:hover { border-color: #d4af37; }
+        .service-image { width: 100%; height: 150px; object-fit: cover; border-radius: 10px; margin-bottom: 15px; }
         .service-header { display: flex; align-items: center; justify-content: space-between; }
         .service-info { display: flex; align-items: center; gap: 15px; }
         .service-icon { font-size: 40px; }
@@ -54,22 +54,6 @@
         .form-input { width: 100%; padding: 15px; background: #2a2a2a; border: 2px solid #333; border-radius: 10px; color: #fff; font-size: 16px; }
         .success-icon { font-size: 100px; color: #25d366; margin-bottom: 20px; }
         .confirmation-box { background: #2a2a2a; padding: 25px; border-radius: 10px; border: 2px solid #d4af37; margin-bottom: 25px; }
-        .admin-login { max-width: 400px; margin: 100px auto; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-        .logout-btn { background: #dc3545; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .stat-card { background: #2a2a2a; padding: 20px; border-radius: 10px; text-align: center; }
-        .stat-number { font-size: 32px; font-weight: bold; color: #d4af37; }
-        .stat-label { color: #888; font-size: 14px; }
-        .booking-card { background: #2a2a2a; padding: 20px; border-radius: 10px; margin-bottom: 15px; }
-        .booking-header { display: flex; justify-content: space-between; margin-bottom: 15px; }
-        .booking-client { font-size: 18px; font-weight: bold; }
-        .booking-phone { color: #25d366; font-size: 14px; }
-        .booking-actions { display: flex; gap: 10px; margin-top: 15px; }
-        .action-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .btn-confirm { background: #007bff; color: #fff; }
-        .btn-complete { background: #28a745; color: #fff; }
-        .btn-cancel { background: #dc3545; color: #fff; }
     </style>
 </head>
 <body>
@@ -80,92 +64,31 @@
     <div class="container" id="main-container"></div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const isAdmin = urlParams.get('admin') === 'true';
-        const ADMIN_PASSWORD = 'matheus123';
-        let selectedService = {}, selectedDate = null, selectedTime = null, isAdminLoggedIn = false;
+        let selectedService = {}, selectedDate = null, selectedTime = null;
 
-        const services = [
-            {id:1, name:'Cabelo', price:40, duration:'30 min', icon:'✂️'},
-            {id:2, name:'Corte Completo', price:60, duration:'45 min', icon:'💈'},
-            {id:3, name:'Barba', price:30, duration:'20 min', icon:'🪒'},
-            {id:4, name:'Sobrancelha', price:10, duration:'10 min', icon:'👁️'},
-            {id:5, name:'Luzes', price:80, duration:'60 min', icon:'⚡'},
-            {id:6, name:'Nevou', price:100, duration:'90 min', icon:'❄️'},
-            {id:7, name:'Pigmentação', price:40, duration:'30 min', icon:'🎨'}
+        const defaultServices = [
+            {id:1, name:'Cabelo', price:40, duration:'30 min', icon:'✂️', image:''},
+            {id:2, name:'Corte Completo', price:60, duration:'45 min', icon:'💈', image:''},
+            {id:3, name:'Barba', price:30, duration:'20 min', icon:'🪒', image:''},
+            {id:4, name:'Sobrancelha', price:10, duration:'10 min', icon:'👁️', image:''},
+            {id:5, name:'Luzes', price:80, duration:'60 min', icon:'⚡', image:''},
+            {id:6, name:'Nevou', price:100, duration:'90 min', icon:'❄️', image:''},
+            {id:7, name:'Pigmentação', price:40, duration:'30 min', icon:'🎨', image:''}
         ];
 
         const timeSlots = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30'];
 
+        function getServices() {
+            const saved = localStorage.getItem('services');
+            return saved ? JSON.parse(saved) : defaultServices;
+        }
+
         function getBookings() { return JSON.parse(localStorage.getItem('bookings') || '[]'); }
         function saveBooking(b) { const bookings = getBookings(); bookings.push(b); localStorage.setItem('bookings', JSON.stringify(bookings)); }
-        function updateBooking(id, updates) { const bookings = getBookings(); const index = bookings.findIndex(b => b.id === id); if (index !== -1) { bookings[index] = {...bookings[index], ...updates}; localStorage.setItem('bookings', JSON.stringify(bookings)); }}
-        function deleteBooking(id) { localStorage.setItem('bookings', JSON.stringify(getBookings().filter(b => b.id !== id))); }
-
-        function loginAdmin() {
-            if (document.getElementById('admin-password').value === ADMIN_PASSWORD) { isAdminLoggedIn = true; render(); } 
-            else alert('Senha incorreta!');
-        }
-
-        function renderAdminLogin() {
-            document.getElementById('main-container').innerHTML = `
-                <div class="admin-login">
-                    <div class="welcome">
-                        <div class="icon">🔐</div>
-                        <h2>Painel Administrativo</h2>
-                        <p>Digite a senha para acessar</p>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Senha</label>
-                        <input type="password" id="admin-password" class="form-input" placeholder="Digite a senha">
-                    </div>
-                    <button class="btn btn-primary" onclick="loginAdmin()">Entrar</button>
-                    <button class="btn back-btn" onclick="location.href='?'">Voltar ao Site</button>
-                </div>`;
-        }
-
-        function renderAdminPanel() {
-            const bookings = getBookings();
-            const today = new Date().toDateString();
-            const todayBookings = bookings.filter(b => new Date(b.date).toDateString() === today);
-            const completed = bookings.filter(b => b.status === 'completed').length;
-            const revenue = bookings.filter(b => b.status === 'completed').reduce((sum, b) => sum + b.service.price, 0);
-
-            document.getElementById('main-container').innerHTML = `
-                <div class="admin-header">
-                    <h2>Painel Administrativo</h2>
-                    <button class="logout-btn" onclick="location.href='?'">Sair</button>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-card"><div class="stat-number">${bookings.length}</div><div class="stat-label">Total de Agendamentos</div></div>
-                    <div class="stat-card"><div class="stat-number">${todayBookings.length}</div><div class="stat-label">Hoje</div></div>
-                    <div class="stat-card"><div class="stat-number">${completed}</div><div class="stat-label">Atendidos</div></div>
-                    <div class="stat-card"><div class="stat-number">R$ ${revenue}</div><div class="stat-label">Faturamento</div></div>
-                </div>
-                <div id="bookings-list">
-                    ${bookings.length === 0 ? '<p style="text-align:center;color:#888;padding:40px">Nenhum agendamento ainda</p>' : bookings.map(b => `
-                        <div class="booking-card">
-                            <div class="booking-header">
-                                <div>
-                                    <div class="booking-client">${b.customer.name}</div>
-                                    <div class="booking-phone">📱 ${b.customer.phone}</div>
-                                </div>
-                            </div>
-                            <div style="margin-bottom:10px">
-                                <div>🔧 <strong>${b.service.name}</strong> | 💰 <strong>R$ ${b.service.price}</strong></div>
-                                <div>📅 ${new Date(b.date).toLocaleDateString('pt-BR')} | 🕐 ${b.time}</div>
-                            </div>
-                            <div class="booking-actions">
-                                <button class="action-btn btn-confirm" onclick="updateBooking('${b.id}', {status:'confirmed'}); render()">Confirmar</button>
-                                <button class="action-btn btn-complete" onclick="updateBooking('${b.id}', {status:'completed'}); render()">Atendido</button>
-                                <button class="action-btn btn-cancel" onclick="if(confirm('Cancelar agendamento?')) { deleteBooking('${b.id}'); render(); }">Cancelar</button>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>`;
-        }
 
         function renderClientApp() {
+            const services = getServices();
+            
             document.getElementById('main-container').innerHTML = `
                 <div id="client-screens">
                     <div id="home" class="screen active">
@@ -189,7 +112,6 @@
                         <button class="btn btn-primary" onclick="showScreen('services')">Agendar Agora</button>
                         <button class="btn btn-whatsapp" onclick="open('https://wa.me/5534991054546')">📱 WhatsApp</button>
                         <button class="btn btn-instagram" onclick="open('https://instagram.com/matheusbarbershop123')">📸 Instagram</button>
-                        <button class="btn btn-admin" onclick="location.href='?admin=true'">🔐 Acesso Admin</button>
                     </div>
 
                     <div id="services" class="screen">
@@ -202,7 +124,6 @@
                     <div id="datetime" class="screen">
                         <button class="back-btn" onclick="showScreen('services')">← Voltar</button>
                         <h2 class="section-title">Data e Horário</h2>
-                        <p class="section-subtitle">Escolha o melhor dia e horário</p>
                         <div class="summary-box">
                             <div class="service-header">
                                 <div class="service-info">
@@ -227,7 +148,6 @@
                     <div id="customer" class="screen">
                         <button class="back-btn" onclick="showScreen('datetime')">← Voltar</button>
                         <h2 class="section-title">Seus Dados</h2>
-                        <p class="section-subtitle">Preencha suas informações</p>
                         <div class="summary-box">
                             <div class="summary-row"><span class="summary-label">Serviço:</span><span class="summary-value" id="sum-service"></span></div>
                             <div class="summary-row"><span class="summary-label">Data:</span><span class="summary-value" id="sum-date"></span></div>
@@ -236,7 +156,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">👤 Nome Completo *</label>
-                            <input type="text" id="customer-name" class="form-input" placeholder="Seu nome">
+                            <input type="text" id="customer-name" class="form-input">
                         </div>
                         <div class="form-group">
                             <label class="form-label">📱 Telefone *</label>
@@ -244,7 +164,7 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label">📧 E-mail (opcional)</label>
-                            <input type="email" id="customer-email" class="form-input" placeholder="seu@email.com">
+                            <input type="email" id="customer-email" class="form-input">
                         </div>
                         <button class="btn btn-primary" onclick="confirmBooking()">Confirmar Agendamento</button>
                     </div>
@@ -252,12 +172,12 @@
                     <div id="confirmation" class="screen">
                         <div class="welcome">
                             <div class="success-icon">✅</div>
-                            <h2>Agendamento Confirmado!</h2>
-                            <p>Seu horário foi reservado com sucesso</p>
+                            <h2>Confirmado!</h2>
+                            <p>Seu horário foi reservado</p>
                         </div>
                         <div class="confirmation-box" id="confirm-details"></div>
-                        <button class="btn btn-whatsapp" onclick="sendWhatsApp()">📱 Enviar Confirmação WhatsApp</button>
-                        <button class="btn btn-primary" onclick="resetBooking()">Fazer Novo Agendamento</button>
+                        <button class="btn btn-whatsapp" onclick="sendWhatsApp()">📱 Enviar WhatsApp</button>
+                        <button class="btn btn-primary" onclick="resetBooking()">Novo Agendamento</button>
                     </div>
                 </div>`;
             renderServices();
@@ -269,8 +189,10 @@
         }
 
         function renderServices() {
+            const services = getServices();
             document.getElementById('services-list').innerHTML = services.map(s => `
-                <div class="service-card" onclick='selectService(${JSON.stringify(s)})'>
+                <div class="service-card" onclick='selectService(${JSON.stringify(s).replace(/'/g, "&apos;")})'>
+                    ${s.image ? `<img src="${s.image}" class="service-image" alt="${s.name}">` : ''}
                     <div class="service-header">
                         <div class="service-info">
                             <div class="service-icon">${s.icon}</div>
@@ -306,7 +228,7 @@
                 date.setDate(today.getDate() + i);
                 const div = document.createElement('div'); 
                 div.className = 'day-btn';
-                div.innerHTML = `<div style="font-size:10px;margin-bottom:3px">${days[date.getDay()]}</div><div style="font-size:18px;font-weight:bold;margin-bottom:3px">${date.getDate()}</div><div style="font-size:10px">${months[date.getMonth()]}</div>`;
+                div.innerHTML = `<div style="font-size:10px">${days[date.getDay()]}</div><div style="font-size:18px;font-weight:bold;margin:3px 0">${date.getDate()}</div><div style="font-size:10px">${months[date.getMonth()]}</div>`;
                 div.onclick = () => selectDate(date);
                 cal.appendChild(div);
             }
@@ -340,7 +262,7 @@
             const email = document.getElementById('customer-email').value;
             
             if (!name || !phone) {
-                alert('Por favor, preencha nome e telefone!');
+                alert('Preencha nome e telefone!');
                 return;
             }
 
@@ -350,25 +272,23 @@
                 date: selectedDate.toISOString(),
                 time: selectedTime,
                 customer: {name, phone, email},
-                status: 'pending',
-                createdAt: new Date().toISOString()
+                status: 'pending'
             };
             
             saveBooking(booking);
 
             document.getElementById('confirm-details').innerHTML = `
                 <div class="summary-row"><span class="summary-label">Nome:</span><span class="summary-value">${name}</span></div>
-                <div class="summary-row"><span class="summary-label">Telefone:</span><span class="summary-value">${phone}</span></div>
                 <div class="summary-row"><span class="summary-label">Serviço:</span><span class="summary-value">${selectedService.name}</span></div>
                 <div class="summary-row"><span class="summary-label">Data:</span><span class="summary-value">${new Date(selectedDate).toLocaleDateString('pt-BR')}</span></div>
                 <div class="summary-row"><span class="summary-label">Horário:</span><span class="summary-value">${selectedTime}</span></div>
-                <div class="summary-row"><span class="summary-label">Total:</span><span class="summary-value" style="font-size:24px;color:#d4af37">R$ ${selectedService.price}</span></div>`;
+                <div class="summary-row"><span class="summary-label">Total:</span><span style="font-size:24px;color:#d4af37">R$ ${selectedService.price}</span></div>`;
             
             showScreen('confirmation');
         }
 
         function sendWhatsApp() {
-            const msg = `*Confirmação de Agendamento - Matheus Barber Shop*\n\n👤 Nome: ${document.getElementById('customer-name').value}\n📅 Data: ${new Date(selectedDate).toLocaleDateString('pt-BR')}\n🕐 Horário: ${selectedTime}\n💈 Serviço: ${selectedService.name}\n💰 Valor: R$ ${selectedService.price}\n\nObrigado pela preferência!`;
+            const msg = `*Confirmação - Matheus Barber Shop*\n\n👤 ${document.getElementById('customer-name').value}\n📅 ${new Date(selectedDate).toLocaleDateString('pt-BR')}\n🕐 ${selectedTime}\n💈 ${selectedService.name}\n💰 R$ ${selectedService.price}`;
             window.open(`https://wa.me/5534991054546?text=${encodeURIComponent(msg)}`);
         }
 
@@ -379,16 +299,7 @@
             showScreen('home');
         }
 
-        function render() {
-            if (isAdmin) { 
-                if (!isAdminLoggedIn) renderAdminLogin(); 
-                else renderAdminPanel(); 
-            } else {
-                renderClientApp();
-            }
-        }
-
-        render();
+        renderClientApp();
     </script>
 </body>
 </html>
