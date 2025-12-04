@@ -4,16 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Matheus Barber Shop</title>
+    <link rel="icon" type="image/jpg" href="https://i.ibb.co/dwMYqmPk/IMG-2261.jpg">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1a1a1a 0%, #000 100%); color: #fff; min-height: 100vh; }
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
         .header { background: rgba(0,0,0,0.5); padding: 20px; text-align: center; border-bottom: 2px solid #d4af37; margin-bottom: 30px; }
+        .header-logo { max-width: 200px; height: auto; margin-bottom: 10px; }
         .header h1 { color: #d4af37; font-size: 24px; margin-bottom: 5px; }
         .header p { color: #888; font-size: 14px; }
         .admin-login { max-width: 400px; margin: 100px auto; background: #2a2a2a; padding: 40px; border-radius: 15px; border: 2px solid #d4af37; }
         .welcome { text-align: center; margin-bottom: 30px; }
         .welcome .icon { font-size: 80px; margin-bottom: 20px; }
+        .welcome .logo-admin { max-width: 180px; height: auto; margin-bottom: 20px; }
         .welcome h2 { font-size: 32px; margin-bottom: 10px; }
         .welcome p { color: #888; }
         .form-group { margin-bottom: 20px; }
@@ -76,7 +79,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>💈 Admin - Matheus Barber Shop</h1>
+        <img src="https://i.ibb.co/dwMYqmPk/IMG-2261.jpg" alt="Matheus Barber Shop" class="header-logo">
         <p>Painel Administrativo</p>
     </div>
     <div class="container" id="main-container"></div>
@@ -108,12 +111,6 @@
 
         function getBookings() { 
             return JSON.parse(localStorage.getItem('bookings') || '[]'); 
-        }
-
-        function saveBooking(b) { 
-            const bookings = getBookings(); 
-            bookings.push(b); 
-            localStorage.setItem('bookings', JSON.stringify(bookings)); 
         }
 
         function updateBooking(id, updates) { 
@@ -180,7 +177,7 @@
             document.getElementById('main-container').innerHTML = `
                 <div class="admin-login">
                     <div class="welcome">
-                        <div class="icon">🔐</div>
+                        <img src="https://i.ibb.co/dwMYqmPk/IMG-2261.jpg" alt="Matheus Barber Shop" class="logo-admin">
                         <h2>Acesso Administrativo</h2>
                         <p>Digite a senha para continuar</p>
                     </div>
@@ -524,12 +521,3 @@
         function render() {
             if (!isAdminLoggedIn) {
                 renderAdminLogin();
-            } else {
-                renderAdminPanel();
-            }
-        }
-
-        render();
-    </script>
-</body>
-</html>
