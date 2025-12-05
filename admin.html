@@ -61,4 +61,444 @@
         .image-preview { width: 100%; max-height: 200px; object-fit: cover; border-radius: 10px; margin: 10px 0; display: none; }
         .image-preview.active { display: block; }
         .file-input-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
-        .file-input-btn { background: #2a2a2a​​​​​​​​​​​​​​​​
+        .file-input-btn { background: #2a2a2a; color: #d4af37; padding: 15px; border: 2px dashed #d4af37; border-radius: 10px; cursor: pointer; text-align: center; width: 100%; display: block; }
+        .file-input-wrapper input[type=file] { position: absolute; left: -9999px; }
+        .search-box { margin-bottom: 20px; }
+        .search-input { width: 100%; padding: 15px; background: #2a2a2a; border: 2px solid #333; border-radius: 10px; color: #fff; font-size: 16px; }
+        .search-input:focus { outline: none; border-color: #d4af37; }
+        .client-stats { font-size: 14px; color: #888; margin-top: 10px; }
+        .status-badge { display: inline-block; padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; margin-top: 5px; }
+        .status-pending { background: #ffc107; color: #000; }
+        .status-confirmed { background: #007bff; color: #fff; }
+        .status-completed { background: #28a745; color: #fff; }
+        .status-cancelled { background: #dc3545; color: #fff; }
+        .logo-preview-large { width: 100%; max-width: 300px; height: auto; border-radius: 10px; margin: 20px auto; display: block; border: 2px solid #d4af37; }
+        .settings-section { margin-bottom: 30px; }
+        .settings-title { font-size: 20px; color: #d4af37; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://i.ibb.co/dwMYqmPk/IMG-2261.jpg" alt="Matheus Barber Shop" class="header-logo" id="header-logo">
+        <p>Painel Administrativo</p>
+    </div>
+    <div class="container" id="main-container"></div>
+    <div id="modal" class="modal"></div>
+
+    <script>
+        const ADMIN_PASSWORD = 'matheus123';
+        let isAdminLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+        let currentTab = 'bookings';
+
+        const defaultServices = [
+            {id:1, name:'Cabelo', price:40, duration:'30 min', icon:'✂️', image:''},
+            {id:2, name:'Corte Completo', price:60, duration:'45 min', icon:'💈', image:''},
+            {id:3, name:'Barba', price:30, duration:'20 min', icon:'🪒', image:''},
+            {id:4, name:'Sobrancelha', price:10, duration:'10 min', icon:'👁️', image:''},
+            {id:5, name:'Luzes', price:80, duration:'60 min', icon:'⚡', image:''},
+            {id:6, name:'Nevou', price:100, duration:'90 min', icon:'❄️', image:''},
+            {id:7, name:'Pigmentação', price:40, duration:'30 min', icon:'🎨', image:''}
+        ];
+
+        const defaultSettings = {
+            logo: 'https://i.ibb.co/dwMYqmPk/IMG-2261.jpg',
+            shopName: 'Matheus Barber Shop',
+            location: 'Rio Verde - Goiás',
+            schedule: 'Seg-Sáb 9h-20h',
+            whatsapp: '5534991054546',
+            instagram: 'matheusbarbershop123'
+        };
+
+        function getSettings() {
+            const saved = localStorage.getItem('settings');
+            return saved ? JSON.parse(saved) : defaultSettings;
+        }
+
+        function saveSettings(settings) {
+            localStorage.setItem('settings', JSON.stringify(settings));
+        }
+
+        function getServices() {
+            const saved = localStorage.getItem('services');
+            return saved ? JSON.parse(saved) : defaultServices;
+        }
+
+        function saveServices(services) {
+            localStorage.setItem('services', JSON.stringify(services));
+        }
+
+        function getBookings() { 
+            return JSON.parse(localStorage.getItem('bookings') || '[]'); 
+        }
+
+        function updateBooking(id, updates) { 
+            const bookings = getBookings(); 
+            const index = bookings.findIndex(b => b.id === id); 
+            if (index !== -1) { 
+                bookings[index] = {...bookings[index], ...updates}; 
+                localStorage.setItem('bookings', JSON.stringify(bookings)); 
+            }
+        }
+
+        function deleteBooking(id) { 
+            localStorage.setItem('bookings', JSON.stringify(getBookings().filter(b => b.id !== id))); 
+        }
+
+        function getAllClients() {
+            const bookings = getBookings();
+            const clientsMap = new Map();
+            
+            bookings.forEach(booking => {
+                const phone = booking.customer.phone;
+                if (!clientsMap.has(phone)) {
+                    clientsMap.set(phone, {
+                        name: booking.customer.name,
+                        phone: booking.customer.phone,
+                        email: booking.customer.email || '',
+                        totalBookings: 0,
+                        totalSpent: 0,
+                        lastVisit: booking.date
+                    });
+                }
+                
+                const client = clientsMap.get(phone);
+                client.totalBookings++;
+                if (booking.status === 'completed') {
+                    client.totalSpent += booking.service.price;
+                }
+                if (new Date(booking.date) > new Date(client.lastVisit)) {
+                    client.lastVisit = booking.date;
+                }
+            });
+            
+            return Array.from(clientsMap.values());
+        }
+
+        function loginAdmin() {
+            const password = document.getElementById('admin-password').value;
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                localStorage.setItem('adminLoggedIn', 'true');
+                render();
+            } else {
+                alert('Senha incorreta!');
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            localStorage.removeItem('adminLoggedIn');
+            render();
+        }
+
+        function renderAdminLogin() {
+            const settings = getSettings();
+            document.getElementById('main-container').innerHTML = `
+                <div class="admin-login">
+                    <div class="welcome">
+                        <img src="${settings.logo}" alt="${settings.shopName}" class="logo-admin">
+                        <h2>Acesso Admin</h2>
+                        <p>Digite a senha</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Senha</label>
+                        <input type="password" id="admin-password" class="form-input" placeholder="Digite a senha">
+                    </div>
+                    <button class="btn btn-primary" onclick="loginAdmin()">Entrar</button>
+                    <button class="btn back-btn" onclick="window.location.href='index.html'">← Voltar</button>
+                </div>
+            `;
+        }
+
+        function showTab(tab) {
+            currentTab = tab;
+            renderAdminPanel();
+        }
+
+        function renderAdminPanel() {
+            const bookings = getBookings();
+            const clients = getAllClients();
+            const today = new Date().toDateString();
+            const todayBookings = bookings.filter(b => new Date(b.date).toDateString() === today);
+            const completed = bookings.filter(b => b.status === 'completed').length;
+            const revenue = bookings.filter(b => b.status === 'completed').reduce((sum, b) => sum + b.service.price, 0);
+
+            document.getElementById('main-container').innerHTML = `
+                <div class="admin-header">
+                    <h2>Painel Admin</h2>
+                    <button class="logout-btn" onclick="logoutAdmin()">🚪 Sair</button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">${bookings.length}</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${todayBookings.length}</div>
+                        <div class="stat-label">Hoje</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">${clients.length}</div>
+                        <div class="stat-label">Clientes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">R$ ${revenue}</div>
+                        <div class="stat-label">Faturamento</div>
+                    </div>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-btn ${currentTab === 'bookings' ? 'active' : ''}" onclick="showTab('bookings')">📅 Agenda</button>
+                    <button class="tab-btn ${currentTab === 'clients' ? 'active' : ''}" onclick="showTab('clients')">👥 Clientes</button>
+                    <button class="tab-btn ${currentTab === 'services' ? 'active' : ''}" onclick="showTab('services')">💈 Serviços</button>
+                    <button class="tab-btn ${currentTab === 'settings' ? 'active' : ''}" onclick="showTab('settings')">⚙️ Config</button>
+                </div>
+
+                <div id="admin-content"></div>
+            `;
+
+            if (currentTab === 'bookings') {
+                renderBookingsList();
+            } else if (currentTab === 'clients') {
+                renderClientsList();
+            } else if (currentTab === 'services') {
+                renderServicesList();
+            } else {
+                renderSettings();
+            }
+        }
+
+        function renderSettings() {
+            const settings = getSettings();
+            const content = document.getElementById('admin-content');
+            
+            content.innerHTML = `
+                <div class="settings-card">
+                    <div class="settings-section">
+                        <h3 class="settings-title">🎨 Logo da Barbearia</h3>
+                        <img src="${settings.logo}" class="logo-preview-large" id="logo-preview-settings">
+                        <div class="file-input-wrapper">
+                            <label class="file-input-btn" for="logo-upload">
+                                📷 Clique para trocar a logo
+                            </label>
+                            <input type="file" id="logo-upload" accept="image/*" onchange="updateLogo(this)">
+                        </div>
+                        <p style="color:#888;font-size:12px;margin-top:10px;text-align:center;">
+                            A logo aparecerá no topo do site e na tela inicial
+                        </p>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="settings-title">📝 Informações da Barbearia</h3>
+                        <div class="form-group">
+                            <label class="form-label">Nome da Barbearia</label>
+                            <input type="text" id="shop-name" class="form-input" value="${settings.shopName}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Localização</label>
+                            <input type="text" id="location" class="form-input" value="${settings.location}">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Horário de Funcionamento</label>
+                            <input type="text" id="schedule" class="form-input" value="${settings.schedule}">
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="settings-title">📱 Redes Sociais</h3>
+                        <div class="form-group">
+                            <label class="form-label">WhatsApp (com código do país)</label>
+                            <input type="text" id="whatsapp" class="form-input" value="${settings.whatsapp}" placeholder="5534991054546">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Instagram (@usuário)</label>
+                            <input type="text" id="instagram" class="form-input" value="${settings.instagram}" placeholder="matheusbarbershop123">
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="saveSettingsChanges()">💾 Salvar Alterações</button>
+                </div>
+            `;
+        }
+
+        function updateLogo(input) {
+            const preview = document.getElementById('logo-preview-settings');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function saveSettingsChanges() {
+            const logoPreview = document.getElementById('logo-preview-settings');
+            const settings = {
+                logo: logoPreview.src,
+                shopName: document.getElementById('shop-name').value,
+                location: document.getElementById('location').value,
+                schedule: document.getElementById('schedule').value,
+                whatsapp: document.getElementById('whatsapp').value,
+                instagram: document.getElementById('instagram').value
+            };
+
+            saveSettings(settings);
+            
+            // Atualiza logo no header
+            document.getElementById('header-logo').src = settings.logo;
+            
+            alert('✅ Configurações salvas com sucesso!');
+        }
+
+        function renderBookingsList() {
+            const bookings = getBookings().sort((a, b) => new Date(b.date) - new Date(a.date));
+            const content = document.getElementById('admin-content');
+            
+            content.innerHTML = bookings.length === 0 ? 
+                '<p style="text-align:center;color:#888;padding:40px">Nenhum agendamento</p>' : 
+                bookings.map(b => `
+                    <div class="booking-card">
+                        <div class="booking-header">
+                            <div>
+                                <div class="booking-client">${b.customer.name}</div>
+                                <div class="booking-phone">📱 ${b.customer.phone}</div>
+                                ${b.customer.email ? `<div class="client-email">📧 ${b.customer.email}</div>` : ''}
+                                <span class="status-badge status-${b.status}">${getStatusLabel(b.status)}</span>
+                            </div>
+                        </div>
+                        <div style="margin-bottom:10px">
+                            <div>💈 ${b.service.name} | 💰 R$ ${b.service.price}</div>
+                            <div style="color:#888;font-size:14px;margin-top:5px">📅 ${new Date(b.date).toLocaleDateString('pt-BR')} | 🕐 ${b.time}</div>
+                        </div>
+                        <div class="booking-actions">
+                            <button class="action-btn btn-confirm" onclick="updateBooking('${b.id}', {status:'confirmed'}); render()">Confirmar</button>
+                            <button class="action-btn btn-complete" onclick="updateBooking('${b.id}', {status:'completed'}); render()">Concluído</button>
+                            <button class="action-btn btn-cancel" onclick="if(confirm('Cancelar?')) { deleteBooking('${b.id}'); render(); }">Cancelar</button>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        function renderClientsList() {
+            const clients = getAllClients().sort((a, b) => b.totalBookings - a.totalBookings);
+            const content = document.getElementById('admin-content');
+            
+            content.innerHTML = `
+                <div class="search-box">
+                    <input type="text" id="client-search" class="search-input" placeholder="🔍 Buscar cliente..." oninput="filterClients()">
+                </div>
+                <div id="clients-list">
+                    ${clients.length === 0 ? 
+                        '<p style="text-align:center;color:#888;padding:40px">Nenhum cliente</p>' :
+                        clients.map(c => `
+                            <div class="client-card" data-name="${c.name.toLowerCase()}" data-phone="${c.phone}">
+                                <div class="client-header">
+                                    <div>
+                                        <div class="client-name">👤 ${c.name}</div>
+                                        <div class="client-phone">📱 ${c.phone}</div>
+                                        ${c.email ? `<div class="client-email">📧 ${c.email}</div>` : ''}
+                                        <div class="client-stats">
+                                            📊 ${c.totalBookings} agendamento(s) | 💰 R$ ${c.totalSpent} | 📅 ${new Date(c.lastVisit).toLocaleDateString('pt-BR')}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="booking-actions">
+                                    <button class="action-btn btn-confirm" onclick="window.open('https://wa.me/${c.phone.replace(/\D/g, '')}')">💬 WhatsApp</button>
+                                    ${c.email ? `<button class="action-btn btn-edit" onclick="location.href='mailto:${c.email}'">📧 Email</button>` : ''}
+                                </div>
+                            </div>
+                        `).join('')
+                    }
+                </div>
+            `;
+        }
+
+        function filterClients() {
+            const search = document.getElementById('client-search').value.toLowerCase();
+            document.querySelectorAll('.client-card').forEach(card => {
+                const name = card.getAttribute('data-name');
+                const phone = card.getAttribute('data-phone');
+                card.style.display = (name.includes(search) || phone.includes(search)) ? 'block' : 'none';
+            });
+        }
+
+        function renderServicesList() {
+            const services = getServices();
+            const content = document.getElementById('admin-content');
+            
+            content.innerHTML = `
+                <button class="btn btn-primary" onclick="openAddServiceModal()" style="margin-bottom:20px">➕ Adicionar Serviço</button>
+                ${services.map(s => `
+                    <div class="service-card">
+                        ${s.image ? `<img src="${s.image}" class="service-image">` : ''}
+                        <div class="service-header">
+                            <div class="service-info">
+                                <div class="service-icon">${s.icon}</div>
+                                <div>
+                                    <div class="service-name">${s.name}</div>
+                                    <div class="service-duration">${s.duration}</div>
+                                </div>
+                            </div>
+                            <div class="service-price">R$ ${s.price}</div>
+                        </div>
+                        <div class="booking-actions">
+                            <button class="action-btn btn-edit" onclick='openEditServiceModal(${JSON.stringify(s).replace(/'/g, "&apos;")})'>✏️ Editar</button>
+                            <button class="action-btn btn-delete" onclick="deleteService(${s.id})">🗑️ Excluir</button>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function getStatusLabel(status) {
+            return {pending:'Pendente',confirmed:'Confirmado',completed:'Concluído',cancelled:'Cancelado'}[status] || status;
+        }
+
+        function openAddServiceModal() {
+            document.getElementById('modal').innerHTML = `
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeModal()">&times;</span>
+                    <h2 class="modal-title">➕ Adicionar Serviço</h2>
+                    <div class="form-group">
+                        <label class="form-label">📸 Foto</label>
+                        <div class="file-input-wrapper">
+                            <label class="file-input-btn" for="service-image-input">📷 Escolher foto</label>
+                            <input type="file" id="service-image-input" accept="image/*" onchange="previewImage(this)">
+                        </div>
+                        <img id="image-preview" class="image-preview">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nome</label>
+                        <input type="text" id="service-name" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Preço (R$)</label>
+                        <input type="number" id="service-price" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Duração</label>
+                        <input type="text" id="service-duration" class="form-input" placeholder="30 min">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ícone</label>
+                        <input type="text" id="service-icon" class="form-input" placeholder="💈" maxlength="2">
+                    </div>
+                    <button class="btn btn-primary" onclick="saveNewService()">Salvar</button>
+                    <button class="btn back-btn" onclick="closeModal()">Cancelar</button>
+                </div>
+            `;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function openEditServiceModal(service) {
+            document.getElementById('modal').innerHTML = `
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeModal()">&times;</span>
+                    <h2 class="modal-title">✏️ Editar Serviço</h2>
+                    <div class="form-group">
+                        <label class="form-label">📸 Foto</label>
+                        ${service.image ? `<img src="${service.image}" class="image-preview active" id="image-preview">` : '<img id="image-preview" class="image-preview">'}
+                        <div class="file-input-wrapper">
+                            <label class="file-input-btn" for="service-image-input">📷 ${service.image ? 'Trocar' : 'Adicionar'} foto</label>
