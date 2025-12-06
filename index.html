@@ -11,7 +11,6 @@
         .container { max-width: 800px; margin: 0 auto; padding: 20px; }
         .header { background: rgba(0,0,0,0.5); padding: 20px; text-align: center; border-bottom: 2px solid #d4af37; margin-bottom: 30px; }
         .header-logo { max-width: 200px; height: auto; margin-bottom: 10px; }
-        .header h1 { color: #d4af37; font-size: 24px; margin-bottom: 5px; }
         .header p { color: #888; font-size: 14px; }
         .screen { display: none; }
         .screen.active { display: block; animation: fadeIn 0.3s; }
@@ -112,8 +111,8 @@
                             </div>
                         </div>
                         <button class="btn btn-primary" onclick="showScreen('services')">Agendar Agora</button>
-                        <button class="btn btn-whatsapp" onclick="open('https://wa.me/5534991054546')">📱 WhatsApp</button>
-                        <button class="btn btn-instagram" onclick="open('https://instagram.com/matheusbarbershop123')">📸 Instagram</button>
+                        <button class="btn btn-whatsapp" onclick="window.open('https://wa.me/5534991054546', '_blank')">📱 WhatsApp</button>
+                        <button class="btn btn-instagram" onclick="window.open('https://instagram.com/matheusbarbershop123', '_blank')">📸 Instagram</button>
                     </div>
 
                     <div id="services" class="screen">
@@ -291,7 +290,7 @@
 
         function sendWhatsApp() {
             const msg = `*Confirmação - Matheus Barber Shop*\n\n👤 ${document.getElementById('customer-name').value}\n📅 ${new Date(selectedDate).toLocaleDateString('pt-BR')}\n🕐 ${selectedTime}\n💈 ${selectedService.name}\n💰 R$ ${selectedService.price}`;
-            window.open(`https://wa.me/5534991054546?text=${encodeURIComponent(msg)}`);
+            window.open(`https://wa.me/5534991054546?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         function resetBooking() {
