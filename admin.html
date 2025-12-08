@@ -182,10 +182,10 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Senha</label>
-                    <input type="password" id="admin-password" class="form-input">
+                    <input type="password" id="admin-password" class="form-input" onkeypress="if(event.key==='Enter') loginAdmin()">
                 </div>
                 <button class="btn btn-primary" onclick="loginAdmin()">Entrar</button>
-                <button class="btn back-btn" onclick="location.href='index.html'" style="width:100%;">← Voltar</button>
+                <button class="btn back-btn" onclick="window.history.back()" style="width:100%;">← Voltar</button>
             </div>`;
     }
 
@@ -426,5 +426,7 @@
 
     function renderClientsList() {
         const clients = getAllClients().sort((a, b) => b.totalBookings - a.totalBookings);
-        let html = clients.length === 0 ? '<p style="text-align:center;
+        let html = clients.length === 0 ? '<p style="text-align:center;color:#888;padding:40px">Nenhum cliente cadastrado</p>' : clients.map(c => `
+            <div class="client-card">
+                <div><strong>👤 ${c.name}
 ```
