@@ -21,56 +21,60 @@
         .form-input { width: 100%; padding: 15px; background: #1a1a1a; border: 2px solid #333; border-radius: 10px; color: #fff; font-size: 16px; }
         .btn { width: 100%; padding: 18px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
         .btn-primary { background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); color: #000; }
-        .back-btn { padding: 12px 20px; background: #2a2a2a; color: #fff; border: none; border-radius: 8px; cursor: pointer; width: 100%; }
+        .back-btn { padding: 12px; background: #2a2a2a; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 10px; }
         .logout-btn { background: #dc3545; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 30px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 30px; }
         .stat-card { background: #2a2a2a; padding: 20px; border-radius: 10px; text-align: center; border: 2px solid #333; }
-        .stat-number { font-size: 32px; font-weight: bold; color: #d4af37; margin-bottom: 5px; }
-        .stat-label { color: #888; font-size: 14px; }
+        .stat-number { font-size: 28px; font-weight: bold; color: #d4af37; margin-bottom: 5px; }
+        .stat-label { color: #888; font-size: 13px; }
         .tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; }
-        .tab-btn { flex: 1; min-width: 75px; padding: 12px 6px; background: #2a2a2a; border: 2px solid #333; border-radius: 8px; cursor: pointer; font-weight: bold; color: #fff; font-size: 11px; }
+        .tab-btn { flex: 1; min-width: 70px; padding: 12px 6px; background: #2a2a2a; border: 2px solid #333; border-radius: 8px; cursor: pointer; font-weight: bold; color: #fff; font-size: 11px; }
         .tab-btn.active { background: #d4af37; color: #000; }
         .booking-card, .client-card { background: #2a2a2a; padding: 20px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #333; }
-        .action-btn { flex: 1; min-width: 80px; padding: 10px 5px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; margin: 5px; }
+        .action-btn { padding: 10px 8px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; margin: 5px; min-width: 70px; }
         .btn-confirm { background: #007bff; color: #fff; }
         .btn-complete { background: #28a745; color: #fff; }
         .btn-cancel { background: #dc3545; color: #fff; }
         .btn-block { background: #e74c3c; color: #fff; }
         .btn-unblock { background: #2ecc71; color: #fff; }
-        .status-badge { padding: 5px 10px; border-radius: 5px; font-size: 12px; font-weight: bold; margin-top: 5px; display: inline-block; }
+        .btn-paid { background: #2ecc71; color: #fff; }
+        .status-badge { padding: 5px 10px; border-radius: 5px; font-size: 11px; font-weight: bold; margin: 5px 5px 0 0; display: inline-block; }
         .status-pending { background: #ffc107; color: #000; }
         .status-confirmed { background: #007bff; color: #fff; }
         .status-completed { background: #28a745; color: #fff; }
         .status-cancelled { background: #dc3545; color: #fff; }
+        .status-paid { background: #2ecc71; color: #fff; }
+        .status-unpaid { background: #e67e22; color: #fff; }
         .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: #2a2a2a; border-radius: 10px; }
-        .calendar-nav-btn { padding: 10px 15px; background: #d4af37; color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .calendar-title { font-size: 20px; font-weight: bold; color: #d4af37; }
+        .calendar-nav-btn { padding: 10px 15px; background: #d4af37; color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; }
+        .calendar-title { font-size: 18px; font-weight: bold; color: #d4af37; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 20px; }
-        .calendar-day-header { text-align: center; padding: 10px; background: #2a2a2a; border-radius: 5px; font-size: 12px; font-weight: bold; color: #d4af37; }
-        .calendar-day { background: #2a2a2a; border: 2px solid #333; border-radius: 10px; padding: 10px; min-height: 120px; cursor: pointer; }
+        .calendar-day-header { text-align: center; padding: 10px; background: #2a2a2a; border-radius: 5px; font-size: 11px; font-weight: bold; color: #d4af37; }
+        .calendar-day { background: #2a2a2a; border: 2px solid #333; border-radius: 10px; padding: 8px; min-height: 100px; cursor: pointer; }
         .calendar-day:hover { border-color: #d4af37; }
         .calendar-day.today { border-color: #d4af37; background: #333; }
         .calendar-day.other-month { opacity: 0.3; }
-        .calendar-day-number { font-weight: bold; font-size: 16px; margin-bottom: 5px; }
-        .calendar-booking { background: #007bff; padding: 3px 5px; border-radius: 5px; font-size: 10px; margin-bottom: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .calendar-day-number { font-weight: bold; font-size: 14px; margin-bottom: 5px; }
+        .calendar-booking { background: #007bff; padding: 2px 4px; border-radius: 4px; font-size: 9px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .calendar-booking.completed { background: #28a745; }
         .calendar-booking.cancelled { background: #dc3545; }
         .calendar-booking.blocked { background: #e74c3c; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 1000; overflow-y: auto; }
+        .calendar-booking.unpaid { background: #e67e22; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; overflow-y: auto; }
         .modal.active { display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: #1a1a1a; padding: 30px; border-radius: 15px; max-width: 500px; width: 100%; border: 2px solid #d4af37; margin: 20px; max-height: 90vh; overflow-y: auto; }
-        .modal-title { font-size: 24px; margin-bottom: 20px; color: #d4af37; }
+        .modal-content { background: #1a1a1a; padding: 25px; border-radius: 15px; max-width: 500px; width: 100%; border: 2px solid #d4af37; margin: 20px; max-height: 85vh; overflow-y: auto; }
+        .modal-title { font-size: 20px; margin-bottom: 20px; color: #d4af37; }
         .modal-close { float: right; font-size: 28px; cursor: pointer; color: #888; line-height: 20px; }
         .modal-close:hover { color: #fff; }
-        .settings-section { margin-bottom: 30px; }
-        .settings-title { font-size: 18px; color: #d4af37; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .settings-section { margin-bottom: 25px; }
+        .settings-title { font-size: 16px; color: #d4af37; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
     </style>
 </head>
 <body>
     <div class="header">
-        <img src="https://i.ibb.co/dwMYqmPk/IMG-2261.jpg" class="header-logo" id="header-logo">
-        <p>Painel Administrativo</p>
+        <img src="https://i.ibb.co/dwMYqmPk/IMG-2261.jpg" class="header-logo">
+        <p style="color:#888;font-size:14px;">Painel Administrativo</p>
     </div>
     <div class="container" id="main-container"></div>
     <div id="modal" class="modal"></div>
@@ -83,6 +87,7 @@
     let currentCalendarDate = new Date();
 
     function getBookings() { return JSON.parse(localStorage.getItem('bookings') || '[]'); }
+    function saveBookings(b) { localStorage.setItem('bookings', JSON.stringify(b)); }
     function getBlockedTimes() { return JSON.parse(localStorage.getItem('blockedTimes') || '[]'); }
     function saveBlockedTimes(times) { localStorage.setItem('blockedTimes', JSON.stringify(times)); }
     function getBlockedClients() { return JSON.parse(localStorage.getItem('blockedClients') || '[]'); }
@@ -93,17 +98,15 @@
         const i = b.findIndex(x => x.id === id); 
         if (i !== -1) { 
             b[i] = {...b[i], ...u}; 
-            localStorage.setItem('bookings', JSON.stringify(b)); 
+            saveBookings(b); 
         }
     }
     
-    function deleteBooking(id) { 
-        localStorage.setItem('bookings', JSON.stringify(getBookings().filter(b => b.id !== id))); 
-    }
+    function deleteBooking(id) { saveBookings(getBookings().filter(b => b.id !== id)); }
 
     function blockTimeSlot(date, time) {
         const blocked = getBlockedTimes();
-        const dateStr = new Date(date).toISOString().split('T')[0];
+        const dateStr = date.split('T')[0];
         const blockId = `${dateStr}_${time}`;
         if (!blocked.find(b => b.id === blockId)) {
             blocked.push({ id: blockId, date: dateStr, time: time });
@@ -112,8 +115,7 @@
     }
 
     function unblockTimeSlot(blockId) {
-        const blocked = getBlockedTimes().filter(b => b.id !== blockId);
-        saveBlockedTimes(blocked);
+        saveBlockedTimes(getBlockedTimes().filter(b => b.id !== blockId));
     }
 
     function blockClient(phone, name) {
@@ -125,8 +127,7 @@
     }
 
     function unblockClient(phone) {
-        const blocked = getBlockedClients().filter(c => c.phone !== phone);
-        saveBlockedClients(blocked);
+        saveBlockedClients(getBlockedClients().filter(c => c.phone !== phone));
     }
 
     function isClientBlocked(phone) {
@@ -151,7 +152,7 @@
             }
             const client = clientsMap.get(phone);
             client.totalBookings++;
-            if (booking.status === 'completed') client.totalSpent += booking.service.price;
+            if (booking.status === 'completed' && booking.paid) client.totalSpent += booking.service.price;
             if (new Date(booking.date) > new Date(client.lastVisit)) client.lastVisit = booking.date;
         });
         return Array.from(clientsMap.values());
@@ -184,7 +185,7 @@
                     <input type="password" id="admin-password" class="form-input">
                 </div>
                 <button class="btn btn-primary" onclick="loginAdmin()">Entrar</button>
-                <button class="btn back-btn" onclick="location.href='index.html'">← Voltar</button>
+                <button class="btn back-btn" onclick="location.href='index.html'" style="width:100%;">← Voltar</button>
             </div>`;
     }
 
@@ -196,17 +197,19 @@
         const today = new Date().toDateString();
         const todayB = bookings.filter(b => new Date(b.date).toDateString() === today);
         const completed = bookings.filter(b => b.status === 'completed').length;
-        const revenue = bookings.filter(b => b.status === 'completed').reduce((sum, b) => sum + b.service.price, 0);
-        const blockedClientsCount = getBlockedClients().length;
+        const paidBookings = bookings.filter(b => b.paid);
+        const revenue = paidBookings.reduce((sum, b) => sum + b.service.price, 0);
+        const blockedCount = getBlockedClients().length;
 
         document.getElementById('main-container').innerHTML = `
             <div class="admin-header"><h2>Painel Admin</h2><button class="logout-btn" onclick="logoutAdmin()">Sair</button></div>
             <div class="stats-grid">
                 <div class="stat-card"><div class="stat-number">${bookings.length}</div><div class="stat-label">Total</div></div>
                 <div class="stat-card"><div class="stat-number">${todayB.length}</div><div class="stat-label">Hoje</div></div>
-                <div class="stat-card"><div class="stat-number">${clients.length}</div><div class="stat-label">Clientes</div></div>
-                <div class="stat-card"><div class="stat-number">${blockedClientsCount}</div><div class="stat-label">Bloqueados</div></div>
-                <div class="stat-card"><div class="stat-number">R$ ${revenue}</div><div class="stat-label">Faturamento</div></div>
+                <div class="stat-card"><div class="stat-number">${completed}</div><div class="stat-label">Atendidos</div></div>
+                <div class="stat-card"><div class="stat-number">${paidBookings.length}</div><div class="stat-label">Pagos</div></div>
+                <div class="stat-card"><div class="stat-number">R$ ${revenue}</div><div class="stat-label">Recebido</div></div>
+                <div class="stat-card"><div class="stat-number">${blockedCount}</div><div class="stat-label">Bloqueados</div></div>
             </div>
             <div class="tabs">
                 <button class="tab-btn ${currentTab === 'calendar' ? 'active' : ''}" onclick="showTab('calendar')">📅 Calendário</button>
@@ -234,20 +237,18 @@
 
         let html = `
             <div class="calendar-header">
-                <button class="calendar-nav-btn" onclick="previousMonth()">← Anterior</button>
+                <button class="calendar-nav-btn" onclick="previousMonth()">◀ Ant</button>
                 <div class="calendar-title">${monthNames[month]} ${year}</div>
-                <button class="calendar-nav-btn" onclick="nextMonth()">Próximo →</button>
+                <button class="calendar-nav-btn" onclick="nextMonth()">Prox ▶</button>
             </div>
             <div class="calendar-grid">`;
 
-        dayNames.forEach(day => {
-            html += `<div class="calendar-day-header">${day}</div>`;
-        });
+        dayNames.forEach(day => html += `<div class="calendar-day-header">${day}</div>`);
 
         const startDay = firstDay.getDay();
         for (let i = 0; i < startDay; i++) {
-            const prevMonthDay = new Date(year, month, 0 - (startDay - i - 1));
-            html += `<div class="calendar-day other-month"><div class="calendar-day-number">${prevMonthDay.getDate()}</div></div>`;
+            const prevDay = new Date(year, month, 0 - (startDay - i - 1));
+            html += `<div class="calendar-day other-month"><div class="calendar-day-number">${prevDay.getDate()}</div></div>`;
         }
 
         for (let day = 1; day <= lastDay.getDate(); day++) {
@@ -261,25 +262,20 @@
             html += `<div class="calendar-day ${isToday ? 'today' : ''}" onclick="showDayDetails('${dateStr}')">
                 <div class="calendar-day-number">${day}</div>`;
             
-            dayBookings.slice(0, 3).forEach(booking => {
-                html += `<div class="calendar-booking ${booking.status}">${booking.time} ${booking.customer.name.split(' ')[0]}</div>`;
+            dayBookings.slice(0, 2).forEach(b => {
+                const statusClass = b.paid ? 'completed' : (b.paid === false ? 'unpaid' : b.status);
+                html += `<div class="calendar-booking ${statusClass}">${b.time} ${b.customer.name.split(' ')[0]}</div>`;
             });
             
-            if (dayBookings.length > 3) {
-                html += `<div style="font-size:10px;color:#888;">+${dayBookings.length - 3} mais</div>`;
-            }
-            
-            if (blockedTimes.length > 0) {
-                html += `<div class="calendar-booking blocked">🚫 ${blockedTimes.length} bloqueado(s)</div>`;
-            }
+            if (dayBookings.length > 2) html += `<div style="font-size:9px;color:#888;">+${dayBookings.length - 2}</div>`;
+            if (blockedTimes.length > 0) html += `<div class="calendar-booking blocked">🚫 ${blockedTimes.length}</div>`;
             
             html += `</div>`;
         }
 
         const endDay = lastDay.getDay();
         for (let i = endDay + 1; i < 7; i++) {
-            const nextMonthDay = i - endDay;
-            html += `<div class="calendar-day other-month"><div class="calendar-day-number">${nextMonthDay}</div></div>`;
+            html += `<div class="calendar-day other-month"><div class="calendar-day-number">${i - endDay}</div></div>`;
         }
 
         html += `</div>`;
@@ -300,24 +296,20 @@
         const date = new Date(dateStr + 'T12:00:00');
         const bookings = getBookings().filter(b => b.date.split('T')[0] === dateStr);
         const blockedTimes = getBlockedTimes().filter(b => b.date === dateStr);
-        
         const timeSlots = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30'];
         
-        let html = `
-            <div class="modal-content">
-                <span class="modal-close" onclick="closeModal()">&times;</span>
-                <h2 class="modal-title">📅 ${date.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</h2>`;
+        let html = `<div class="modal-content"><span class="modal-close" onclick="closeModal()">&times;</span><h2 class="modal-title">📅 ${date.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</h2>`;
         
         if (bookings.length > 0) {
             html += `<div class="settings-section"><h3 class="settings-title">Agendamentos</h3>`;
             bookings.forEach(b => {
-                html += `
-                    <div class="booking-card" style="margin-bottom:10px;padding:15px;">
-                        <div><strong>${b.time}</strong> - ${b.customer.name}</div>
-                        <div style="font-size:12px;color:#888;">${b.service.name} | R$ ${b.service.price}</div>
-                        <div style="font-size:12px;color:#25d366;">📱 ${b.customer.phone}</div>
-                        <span class="status-badge status-${b.status}">${{pending:'Pendente',confirmed:'Confirmado',completed:'Concluído',cancelled:'Cancelado'}[b.status]}</span>
-                    </div>`;
+                html += `<div class="booking-card" style="padding:15px;margin-bottom:10px;">
+                    <div><strong>${b.time}</strong> - ${b.customer.name}</div>
+                    <div style="font-size:12px;color:#888;">${b.service.name} | R$ ${b.service.price}</div>
+                    <div style="font-size:12px;color:#25d366;">📱 ${b.customer.phone}</div>
+                    <span class="status-badge status-${b.status}">${{pending:'Pendente',confirmed:'Confirmado',completed:'Concluído',cancelled:'Cancelado'}[b.status]}</span>
+                    <span class="status-badge ${b.paid ? 'status-paid' : 'status-unpaid'}">${b.paid ? '✓ Pago' : '✗ Não Pago'}</span>
+                </div>`;
             });
             html += `</div>`;
         }
@@ -329,11 +321,11 @@
             const hasBooking = bookings.find(b => b.time === time);
             
             if (isBlocked) {
-                html += `<button class="btn btn-primary" style="margin-bottom:10px;background:#28a745;" onclick="unblockTime('${blockId}')">${time} - ✓ Bloqueado (Clique para desbloquear)</button>`;
+                html += `<button class="btn btn-primary" style="margin-bottom:8px;background:#28a745;padding:10px;" onclick="unblockTime('${blockId}')">${time} ✓ Bloqueado</button>`;
             } else if (hasBooking) {
-                html += `<button class="btn" style="margin-bottom:10px;background:#555;cursor:not-allowed;" disabled>${time} - Ocupado</button>`;
+                html += `<button class="btn" style="margin-bottom:8px;background:#555;cursor:not-allowed;padding:10px;" disabled>${time} Ocupado</button>`;
             } else {
-                html += `<button class="btn btn-cancel" style="margin-bottom:10px;" onclick="blockTime('${dateStr}', '${time}')">${time} - Bloquear</button>`;
+                html += `<button class="btn btn-cancel" style="margin-bottom:8px;padding:10px;" onclick="blockTime('${dateStr}', '${time}')">${time} Bloquear</button>`;
             }
         });
         html += `</div></div>`;
@@ -346,7 +338,7 @@
         blockTimeSlot(date, time);
         closeModal();
         render();
-        alert(`✅ Horário ${time} bloqueado!`);
+        alert(`✅ ${time} bloqueado!`);
     }
 
     function unblockTime(blockId) {
@@ -360,32 +352,27 @@
         const blockedClients = getBlockedClients();
         const blockedTimes = getBlockedTimes();
         
-        let html = `
-            <div class="settings-section">
-                <h3 class="settings-title">🚫 Clientes Bloqueados (${blockedClients.length})</h3>
-                ${blockedClients.length === 0 ? '<p style="text-align:center;color:#888;padding:20px;">Nenhum cliente bloqueado</p>' : 
-                    blockedClients.map(c => `
-                        <div class="client-card">
-                            <div><strong>👤 ${c.name}</strong></div>
-                            <div style="color:#25d366;font-size:14px;">📱 ${c.phone}</div>
-                            <div style="color:#888;font-size:12px;">Bloqueado em: ${new Date(c.blockedAt).toLocaleDateString('pt-BR')}</div>
-                            <button class="btn btn-unblock" style="margin-top:10px;" onclick="unblockClientAction('${c.phone}')">Desbloquear</button>
-                        </div>
-                    `).join('')}
-            </div>
-            
-            <div class="settings-section">
-                <h3 class="settings-title">🚫 Horários Bloqueados (${blockedTimes.length})</h3>
-                ${blockedTimes.length === 0 ? '<p style="text-align:center;color:#888;padding:20px;">Nenhum horário bloqueado</p>' : 
-                    blockedTimes.sort((a,b) => new Date(a.date) - new Date(b.date)).map(t => `
-                        <div class="booking-card" style="padding:15px;">
-                            <div><strong>📅 ${new Date(t.date + 'T12:00:00').toLocaleDateString('pt-BR')}</strong></div>
-                            <div style="color:#888;">🕐 ${t.time}</div>
-                            <button class="btn btn-unblock" style="margin-top:10px;" onclick="unblockTime('${t.id}')">Desbloquear</button>
-                        </div>
-                    `).join('')}
-            </div>`;
+        let html = `<div class="settings-section"><h3 class="settings-title">🚫 Clientes Bloqueados (${blockedClients.length})</h3>`;
+        html += blockedClients.length === 0 ? '<p style="text-align:center;color:#888;padding:20px;">Nenhum cliente bloqueado</p>' : 
+            blockedClients.map(c => `
+                <div class="client-card" style="padding:15px;">
+                    <div><strong>👤 ${c.name}</strong></div>
+                    <div style="color:#25d366;font-size:14px;">📱 ${c.phone}</div>
+                    <div style="color:#888;font-size:12px;">Bloqueado: ${new Date(c.blockedAt).toLocaleDateString('pt-BR')}</div>
+                    <button class="btn btn-unblock" style="margin-top:10px;padding:10px;" onclick="unblockClientAction('${c.phone}')">Desbloquear</button>
+                </div>
+            `).join('');
         
+        html += `</div><div class="settings-section"><h3 class="settings-title">🚫 Horários Bloqueados (${blockedTimes.length})</h3>`;
+        html += blockedTimes.length === 0 ? '<p style="text-align:center;color:#888;padding:20px;">Nenhum horário bloqueado</p>' : 
+            blockedTimes.sort((a,b) => new Date(a.date) - new Date(b.date)).map(t => `
+                <div class="booking-card" style="padding:15px;">
+                    <div><strong>📅 ${new Date(t.date + 'T12:00:00').toLocaleDateString('pt-BR')}</strong></div>
+                    <div style="color:#888;">🕐 ${t.time}</div>
+                    <button class="btn btn-unblock" style="margin-top:10px;padding:10px;" onclick="unblockTime('${t.id}')">Desbloquear</button>
+                </div>
+            `).join('');
+        html += `</div>`;
         document.getElementById('admin-content').innerHTML = html;
     }
 
@@ -399,38 +386,45 @@
 
     function renderBookingsList() {
         const bookings = getBookings().sort((a, b) => new Date(b.date) - new Date(a.date));
-        document.getElementById('admin-content').innerHTML = bookings.length === 0 ? '<p style="text-align:center;color:#888;padding:40px">Nenhum agendamento</p>' : bookings.map(b => `
+        let html = bookings.length === 0 ? '<p style="text-align:center;color:#888;padding:40px">Nenhum agendamento</p>' : bookings.map(b => `
             <div class="booking-card">
                 <div><strong>${b.customer.name}</strong></div>
                 <div style="color:#25d366;font-size:14px;">📱 ${b.customer.phone}</div>
                 ${b.customer.email ? `<div style="color:#888;font-size:14px;">📧 ${b.customer.email}</div>` : ''}
-                <span class="status-badge status-${b.status}">${{pending:'Pendente',confirmed:'Confirmado',completed:'Concluído',cancelled:'Cancelado'}[b.status]}</span>
-                <div style="margin-top:10px">
+                <div style="margin-top:8px;">
+                    <span class="status-badge status-${b.status}">${{pending:'Pendente',confirmed:'Confirmado',completed:'Concluído',cancelled:'Cancelado'}[b.status]}</span>
+                    <span class="status-badge ${b.paid ? 'status-paid' : 'status-unpaid'}">${b.paid ? '✓ Pago' : '✗ Não Pago'}</span>
+                </div>
+                <div style="margin-top:10px;">
                     <div>💈 ${b.service.name} | 💰 R$ ${b.service.price}</div>
                     <div style="color:#888;font-size:14px;margin-top:5px;">📅 ${new Date(b.date).toLocaleDateString('pt-BR')} | 🕐 ${b.time}</div>
                 </div>
-                <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap;">
+                <div style="display:flex;gap:8px;margin-top:15px;flex-wrap:wrap;">
+                    ${!b.paid ? `<button class="action-btn btn-paid" onclick="markAsPaid('${b.id}')">💰 Pago</button>` : ''}
                     <button class="action-btn btn-confirm" onclick="updateBooking('${b.id}', {status:'confirmed'}); render()">Confirmar</button>
                     <button class="action-btn btn-complete" onclick="updateBooking('${b.id}', {status:'completed'}); render()">Concluído</button>
                     <button class="action-btn btn-cancel" onclick="if(confirm('Cancelar?')) { deleteBooking('${b.id}'); render(); }">Cancelar</button>
+                    <button class="action-btn btn-block" onclick="blockClientAction('${b.customer.phone}', '${b.customer.name}')">Bloquear</button>
                 </div>
             </div>`).join('');
+        document.getElementById('admin-content').innerHTML = html;
+    }
+
+    function markAsPaid(id) {
+        updateBooking(id, { paid: true });
+        render();
+        alert('✅ Marcado como pago!');
+    }
+
+    function blockClientAction(phone, name) {
+        if (confirm(`Bloquear ${name}?`)) {
+            blockClient(phone, name);
+            render();
+            alert('✅ Cliente bloqueado!');
+        }
     }
 
     function renderClientsList() {
         const clients = getAllClients().sort((a, b) => b.totalBookings - a.totalBookings);
-        let html = clients.length === 0 ? '<p style="text-align:center;color:#888;padding:40px">Nenhum cliente</p>' : clients.map(c => `
-            <div class="client-card">
-                <div><strong>👤 ${c.name}</strong> ${c.blocked ? '<span class="status-badge status-cancelled">BLOQUEADO</span>' : ''}</div>
-                <div style="color:#25d366;font-size:14px;">📱 ${c.phone}</div>
-                ${c.email ? `<div style="color:#888;font-size:14px;">📧 ${c.email}</div>` : ''}
-                <div style="color:#888;font-size:14px;margin-top:10px;">
-                    📊 ${c.totalBookings} agendamento(s) | 💰 R$ ${c.totalSpent} | 📅 ${new Date(c.lastVisit).toLocaleDateString('pt-BR')}
-                </div>
-                <div style="display:flex;gap:10px;margin-top:15px;flex-wrap:wrap;">
-                    <button class="action-btn btn-confirm" onclick="window.open('https://wa.me/${c.phone.replace(/\D/g, '')}')">💬 WhatsApp</button>
-                    ${c.email ? `<button class="action-btn btn-confirm" onclick="location.href='mailto:${c.email}'">📧 Email</button>` : ''}
-                    ${c.blocked ? 
-                        `<button class="action-btn btn-unblock" onclick="unblockClientAction('${c.phone}')">Desbloquear</button>` :
-                        `<button class="action-
+        let html = clients.length === 0 ? '<p style="text-align:center;
 ```
