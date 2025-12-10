@@ -1,1017 +1,861 @@
-import React, { useState } from ‘react’;
-import { Calendar, Users, Clock, CheckCircle, XCircle, Search, Filter, Edit, Trash2, Plus, Settings, Ban, DollarSign, CreditCard, Wallet, Lock, LogOut, Eye, EyeOff } from ‘lucide-react’;
+<!DOCTYPE html>
 
-const AdminPanel = () => {
-const [autenticado, setAutenticado] = useState(false);
-const [email, setEmail] = useState(’’);
-const [senha, setSenha] = useState(’’);
-const [mostrarSenha, setMostrarSenha] = useState(false);
-const [erroLogin, setErroLogin] = useState(’’);
-
-// Credenciais de administrador (em produção, isso viria de um backend)
-const admins = [
-{ email: ‘admin@sistema.com’, senha: ‘admin123’, nome: ‘Administrador’ },
-{ email: ‘gerente@sistema.com’, senha: ‘gerente123’, nome: ‘Gerente’ },
-{ email: ‘atendente@sistema.com’, senha: ‘atendente123’, nome: ‘Atendente’ }
-];
-
-const [usuarioLogado, setUsuarioLogado] = useState(null);
-const [activeTab, setActiveTab] = useState(‘agendamentos’);
-const [agendamentos, setAgendamentos] = useState([
-{
-id: 1,
-cliente: ‘João Silva’,
-clienteId: 1,
-servico: ‘Corte de Cabelo’,
-data: ‘2024-12-10’,
-hora: ‘14:00’,
-status: ‘confirmado’,
-valor: 50.00,
-telefone: ‘(11) 98765-4321’,
-metodoPagamento: ‘pix’,
-pagamentoStatus: ‘pago’
-},
-{
-id: 2,
-cliente: ‘Maria Santos’,
-clienteId: 2,
-servico: ‘Manicure’,
-data: ‘2024-12-10’,
-hora: ‘15:30’,
-status: ‘pendente’,
-valor: 35.00,
-telefone: ‘(11) 91234-5678’,
-metodoPagamento: ‘credito’,
-pagamentoStatus: ‘pendente’
-},
-{
-id: 3,
-cliente: ‘Pedro Costa’,
-clienteId: 3,
-servico: ‘Barba’,
-data: ‘2024-12-11’,
-hora: ‘10:00’,
-status: ‘confirmado’,
-valor: 30.00,
-telefone: ‘(11) 99876-5432’,
-metodoPagamento: ‘dinheiro’,
-pagamentoStatus: ‘pago’
-},
-{
-id: 4,
-cliente: ‘Ana Silva’,
-clienteId: 4,
-servico: ‘Corte + Barba’,
-data: ‘2024-12-12’,
-hora: ‘16:00’,
-status: ‘confirmado’,
-valor: 80.00,
-telefone: ‘(11) 97777-8888’,
-metodoPagamento: ‘debito’,
-pagamentoStatus: ‘pago’
-}
-]);
-
-const [clientesBloqueados, setClientesBloqueados] = useState([
-{
-id: 1,
-nome: ‘Carlos Souza’,
-telefone: ‘(11) 95555-4444’,
-motivo: ‘Não compareceu 3 vezes’,
-dataBloqueio: ‘2024-12-01’
-}
-]);
-
-const [servicos, setServicos] = useState([
-{ id: 1, nome: ‘Corte de Cabelo’, duracao: 30, valor: 50.00, ativo: true },
-{ id: 2, nome: ‘Barba’, duracao: 20, valor: 30.00, ativo: true },
-{ id: 3, nome: ‘Manicure’, duracao: 45, valor: 35.00, ativo: true },
-{ id: 4, nome: ‘Pedicure’, duracao: 60, valor: 40.00, ativo: true },
-{ id: 5, nome: ‘Corte + Barba’, duracao: 50, valor: 80.00, ativo: true }
-]);
-
-const [horarios, setHorarios] = useState({
-segunda: { inicio: ‘09:00’, fim: ‘18:00’, ativo: true },
-terca: { inicio: ‘09:00’, fim: ‘18:00’, ativo: true },
-quarta: { inicio: ‘09:00’, fim: ‘18:00’, ativo: true },
-quinta: { inicio: ‘09:00’, fim: ‘18:00’, ativo: true },
-sexta: { inicio: ‘09:00’, fim: ‘18:00’, ativo: true },
-sabado: { inicio: ‘09:00’, fim: ‘14:00’, ativo: true },
-domingo: { inicio: ‘00:00’, fim: ‘00:00’, ativo: false }
-});
-
-const [filtro, setFiltro] = useState(‘todos’);
-const [busca, setBusca] = useState(’’);
-const [modalServico, setModalServico] = useState(false);
-const [modalBloquear, setModalBloquear] = useState(false);
-const [clienteParaBloquear, setClienteParaBloquear] = useState(null);
-const [motivoBloqueio, setMotivoBloqueio] = useState(’’);
-const [novoServico, setNovoServico] = useState({ nome: ‘’, duracao: ‘’, valor: ‘’ });
-const [dataSelecionada, setDataSelecionada] = useState(new Date().toISOString().split(‘T’)[0]);
-const [mesSelecionado, setMesSelecionado] = useState(new Date());
-
-const statusColors = {
-pendente: ‘bg-yellow-100 text-yellow-800 border-yellow-300’,
-confirmado: ‘bg-green-100 text-green-800 border-green-300’,
-cancelado: ‘bg-red-100 text-red-800 border-red-300’,
-concluido: ‘bg-blue-100 text-blue-800 border-blue-300’
-};
-
-const pagamentoColors = {
-pago: ‘bg-green-100 text-green-800’,
-pendente: ‘bg-yellow-100 text-yellow-800’,
-cancelado: ‘bg-red-100 text-red-800’
-};
-
-const metodosPagamento = {
-pix: { nome: ‘PIX’, icon: ‘📱’ },
-credito: { nome: ‘Cartão Crédito’, icon: ‘💳’ },
-debito: { nome: ‘Cartão Débito’, icon: ‘💳’ },
-dinheiro: { nome: ‘Dinheiro’, icon: ‘💵’ }
-};
-
-const handleLogin = (e) => {
-e.preventDefault();
-setErroLogin(’’);
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - Sistema de Agendamentos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="app"></div>
 
 ```
-const admin = admins.find(a => a.email === email && a.senha === senha);
+<script>
+    // Estado da aplicação
+    let state = {
+        autenticado: false,
+        usuarioLogado: null,
+        activeTab: 'agendamentos',
+        email: '',
+        senha: '',
+        mostrarSenha: false,
+        erroLogin: '',
+        filtro: 'todos',
+        busca: '',
+        modalServico: false,
+        modalBloquear: false,
+        clienteParaBloquear: null,
+        motivoBloqueio: '',
+        novoServico: { nome: '', duracao: '', valor: '' },
+        dataSelecionada: new Date().toISOString().split('T')[0],
+        mesSelecionado: new Date(),
+        agendamentos: [
+            { id: 1, cliente: 'João Silva', servico: 'Corte de Cabelo', data: '2024-12-10', hora: '14:00', status: 'confirmado', valor: 50.00, telefone: '(11) 98765-4321', metodoPagamento: 'pix', pagamentoStatus: 'pago' },
+            { id: 2, cliente: 'Maria Santos', servico: 'Manicure', data: '2024-12-10', hora: '15:30', status: 'pendente', valor: 35.00, telefone: '(11) 91234-5678', metodoPagamento: 'credito', pagamentoStatus: 'pendente' },
+            { id: 3, cliente: 'Pedro Costa', servico: 'Barba', data: '2024-12-11', hora: '10:00', status: 'confirmado', valor: 30.00, telefone: '(11) 99876-5432', metodoPagamento: 'dinheiro', pagamentoStatus: 'pago' },
+            { id: 4, cliente: 'Ana Silva', servico: 'Corte + Barba', data: '2024-12-12', hora: '16:00', status: 'confirmado', valor: 80.00, telefone: '(11) 97777-8888', metodoPagamento: 'debito', pagamentoStatus: 'pago' }
+        ],
+        clientesBloqueados: [
+            { id: 1, nome: 'Carlos Souza', telefone: '(11) 95555-4444', motivo: 'Não compareceu 3 vezes', dataBloqueio: '2024-12-01' }
+        ],
+        servicos: [
+            { id: 1, nome: 'Corte de Cabelo', duracao: 30, valor: 50.00, ativo: true },
+            { id: 2, nome: 'Barba', duracao: 20, valor: 30.00, ativo: true },
+            { id: 3, nome: 'Manicure', duracao: 45, valor: 35.00, ativo: true },
+            { id: 4, nome: 'Pedicure', duracao: 60, valor: 40.00, ativo: true },
+            { id: 5, nome: 'Corte + Barba', duracao: 50, valor: 80.00, ativo: true }
+        ],
+        horarios: {
+            segunda: { inicio: '09:00', fim: '18:00', ativo: true },
+            terca: { inicio: '09:00', fim: '18:00', ativo: true },
+            quarta: { inicio: '09:00', fim: '18:00', ativo: true },
+            quinta: { inicio: '09:00', fim: '18:00', ativo: true },
+            sexta: { inicio: '09:00', fim: '18:00', ativo: true },
+            sabado: { inicio: '09:00', fim: '14:00', ativo: true },
+            domingo: { inicio: '00:00', fim: '00:00', ativo: false }
+        }
+    };
 
-if (admin) {
-  setAutenticado(true);
-  setUsuarioLogado(admin);
-  setEmail('');
-  setSenha('');
-} else {
-  setErroLogin('Email ou senha incorretos!');
-}
-```
+    const admins = [
+        { email: 'admin@sistema.com', senha: 'admin123', nome: 'Administrador' },
+        { email: 'gerente@sistema.com', senha: 'gerente123', nome: 'Gerente' },
+        { email: 'atendente@sistema.com', senha: 'atendente123', nome: 'Atendente' }
+    ];
 
-};
+    const metodosPagamento = {
+        pix: { nome: 'PIX', icon: '📱' },
+        credito: { nome: 'Cartão Crédito', icon: '💳' },
+        debito: { nome: 'Cartão Débito', icon: '💳' },
+        dinheiro: { nome: 'Dinheiro', icon: '💵' }
+    };
 
-const handleLogout = () => {
-setAutenticado(false);
-setUsuarioLogado(null);
-setActiveTab(‘agendamentos’);
-};
+    function render() {
+        const app = document.getElementById('app');
+        if (!state.autenticado) {
+            app.innerHTML = renderLogin();
+        } else {
+            app.innerHTML = renderPainel();
+        }
+        attachEventListeners();
+    }
 
-const agendamentosFiltrados = agendamentos.filter(ag => {
-const matchFiltro = filtro === ‘todos’ || ag.status === filtro;
-const matchBusca = ag.cliente.toLowerCase().includes(busca.toLowerCase()) ||
-ag.servico.toLowerCase().includes(busca.toLowerCase());
-return matchFiltro && matchBusca;
-});
-
-const stats = {
-total: agendamentos.length,
-confirmados: agendamentos.filter(a => a.status === ‘confirmado’).length,
-pendentes: agendamentos.filter(a => a.status === ‘pendente’).length,
-receita: agendamentos.filter(a => a.pagamentoStatus === ‘pago’).reduce((sum, a) => sum + a.valor, 0),
-bloqueados: clientesBloqueados.length
-};
-
-const alterarStatus = (id, novoStatus) => {
-setAgendamentos(agendamentos.map(ag =>
-ag.id === id ? { …ag, status: novoStatus } : ag
-));
-};
-
-const alterarPagamento = (id, novoStatus) => {
-setAgendamentos(agendamentos.map(ag =>
-ag.id === id ? { …ag, pagamentoStatus: novoStatus } : ag
-));
-};
-
-const excluirAgendamento = (id) => {
-if (window.confirm(‘Deseja realmente excluir este agendamento?’)) {
-setAgendamentos(agendamentos.filter(ag => ag.id !== id));
-}
-};
-
-const abrirModalBloquear = (agendamento) => {
-setClienteParaBloquear(agendamento);
-setModalBloquear(true);
-};
-
-const bloquearCliente = () => {
-if (clienteParaBloquear && motivoBloqueio.trim()) {
-const novoClienteBloqueado = {
-id: clientesBloqueados.length + 1,
-nome: clienteParaBloquear.cliente,
-telefone: clienteParaBloquear.telefone,
-motivo: motivoBloqueio,
-dataBloqueio: new Date().toISOString().split(‘T’)[0]
-};
-setClientesBloqueados([…clientesBloqueados, novoClienteBloqueado]);
-setModalBloquear(false);
-setClienteParaBloquear(null);
-setMotivoBloqueio(’’);
-alert(‘Cliente bloqueado com sucesso!’);
-}
-};
-
-const desbloquearCliente = (id) => {
-if (window.confirm(‘Deseja desbloquear este cliente?’)) {
-setClientesBloqueados(clientesBloqueados.filter(c => c.id !== id));
-}
-};
-
-const adicionarServico = () => {
-if (novoServico.nome && novoServico.duracao && novoServico.valor) {
-setServicos([…servicos, {
-id: servicos.length + 1,
-nome: novoServico.nome,
-duracao: parseInt(novoServico.duracao),
-valor: parseFloat(novoServico.valor),
-ativo: true
-}]);
-setNovoServico({ nome: ‘’, duracao: ‘’, valor: ‘’ });
-setModalServico(false);
-}
-};
-
-const toggleServicoAtivo = (id) => {
-setServicos(servicos.map(s =>
-s.id === id ? { …s, ativo: !s.ativo } : s
-));
-};
-
-const excluirServico = (id) => {
-if (window.confirm(‘Deseja realmente excluir este serviço?’)) {
-setServicos(servicos.filter(s => s.id !== id));
-}
-};
-
-const getDiasDoMes = (data) => {
-const ano = data.getFullYear();
-const mes = data.getMonth();
-const primeiroDia = new Date(ano, mes, 1);
-const ultimoDia = new Date(ano, mes + 1, 0);
-const diasDoMes = [];
-
-```
-for (let i = 0; i < primeiroDia.getDay(); i++) {
-  diasDoMes.push(null);
-}
-
-for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
-  diasDoMes.push(new Date(ano, mes, dia));
-}
-
-return diasDoMes;
-```
-
-};
-
-const getAgendamentosData = (data) => {
-if (!data) return [];
-const dataStr = data.toISOString().split(‘T’)[0];
-return agendamentos.filter(ag => ag.data === dataStr);
-};
-
-const mesAnterior = () => {
-setMesSelecionado(new Date(mesSelecionado.getFullYear(), mesSelecionado.getMonth() - 1));
-};
-
-const proximoMes = () => {
-setMesSelecionado(new Date(mesSelecionado.getFullYear(), mesSelecionado.getMonth() + 1));
-};
-
-const agendamentosDataSelecionada = agendamentos.filter(ag => ag.data === dataSelecionada);
-
-// TELA DE LOGIN
-if (!autenticado) {
-return (
-<div className="min-h-screen bg-gradient-to-br from-blue-500 via-blue-600 to-blue-800 flex items-center justify-center p-4">
-<div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
-<div className="bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-white text-center">
-<div className="bg-white bg-opacity-20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
-<Lock size={40} />
-</div>
-<h1 className="text-3xl font-bold mb-2">Painel Administrativo</h1>
-<p className="text-blue-100">Faça login para acessar o sistema</p>
-</div>
-
-```
-      <form onSubmit={handleLogin} className="p-8">
-        {erroLogin && (
-          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
-            {erroLogin}
-          </div>
-        )}
-
-        <div className="mb-6">
-          <label className="block text-gray-700 font-medium mb-2">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="seu@email.com"
-            required
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-gray-700 font-medium mb-2">Senha</label>
-          <div className="relative">
-            <input
-              type={mostrarSenha ? 'text' : 'password'}
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-              placeholder="••••••••"
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
-            />
-            <button
-              type="button"
-              onClick={() => setMostrarSenha(!mostrarSenha)}
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
-            >
-              {mostrarSenha ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-        </div>
-
-        <button
-          type="submit"
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors mb-4"
-        >
-          Entrar
-        </button>
-
-        <div className="border-t pt-6 mt-6">
-          <p className="text-sm text-gray-600 mb-3 font-medium">Credenciais de teste:</p>
-          <div className="space-y-2 text-xs">
-            <div className="bg-gray-50 p-3 rounded border">
-              <p className="font-medium text-gray-700">Administrador:</p>
-              <p className="text-gray-600">admin@sistema.com / admin123</p>
-            </div>
-            <div className="bg-gray-50 p-3 rounded border">
-              <p className="font-medium text-gray-700">Gerente:</p>
-              <p className="text-gray-600">gerente@sistema.com / gerente123</p>
-            </div>
-            <div className="bg-gray-50 p-3 rounded border">
-              <p className="font-medium text-gray-700">Atendente:</p>
-              <p className="text-gray-600">atendente@sistema.com / atendente123</p>
-            </div>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
-);
-```
-
-}
-
-// PAINEL ADMINISTRATIVO (após login)
-return (
-<div className="min-h-screen bg-gray-50">
-<div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 shadow-lg">
-<div className="max-w-7xl mx-auto flex justify-between items-center">
-<div>
-<h1 className="text-3xl font-bold mb-2">Painel Administrativo</h1>
-<p className="text-blue-100">Gerencie seus agendamentos e configurações</p>
-</div>
-<div className="flex items-center gap-4">
-<div className="text-right">
-<p className="text-sm text-blue-100">Logado como:</p>
-<p className="font-medium">{usuarioLogado?.nome}</p>
-</div>
-<button
-onClick={handleLogout}
-className="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
->
-<LogOut size={20} />
-Sair
-</button>
-</div>
-</div>
-</div>
-
-```
-  <div className="max-w-7xl mx-auto px-4 -mt-6 mb-8">
-    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-      <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-500 text-sm">Total Agendamentos</p>
-            <p className="text-2xl font-bold text-gray-800">{stats.total}</p>
-          </div>
-          <Calendar className="text-blue-500" size={32} />
-        </div>
-      </div>
-      
-      <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-500 text-sm">Confirmados</p>
-            <p className="text-2xl font-bold text-gray-800">{stats.confirmados}</p>
-          </div>
-          <CheckCircle className="text-green-500" size={32} />
-        </div>
-      </div>
-      
-      <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-500 text-sm">Pendentes</p>
-            <p className="text-2xl font-bold text-gray-800">{stats.pendentes}</p>
-          </div>
-          <Clock className="text-yellow-500" size={32} />
-        </div>
-      </div>
-      
-      <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-500 text-sm">Receita</p>
-            <p className="text-2xl font-bold text-gray-800">R$ {stats.receita.toFixed(2)}</p>
-          </div>
-          <DollarSign className="text-purple-500" size={32} />
-        </div>
-      </div>
-
-      <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-gray-500 text-sm">Bloqueados</p>
-            <p className="text-2xl font-bold text-gray-800">{stats.bloqueados}</p>
-          </div>
-          <Ban className="text-red-500" size={32} />
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div className="max-w-7xl mx-auto px-4 mb-6">
-    <div className="bg-white rounded-lg shadow">
-      <div className="flex overflow-x-auto border-b">
-        <button
-          onClick={() => setActiveTab('agendamentos')}
-          className={`px-6 py-3 font-medium transition-colors whitespace-nowrap ${
-            activeTab === 'agendamentos'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Calendar className="inline mr-2" size={20} />
-          Agendamentos
-        </button>
-        <button
-          onClick={() => setActiveTab('calendario')}
-          className={`px-6 py-3 font-medium transition-colors whitespace-nowrap ${
-            activeTab === 'calendario'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Calendar className="inline mr-2" size={20} />
-          Calendário
-        </button>
-        <button
-          onClick={() => setActiveTab('bloqueados')}
-          className={`px-6 py-3 font-medium transition-colors whitespace-nowrap ${
-            activeTab === 'bloqueados'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Ban className="inline mr-2" size={20} />
-          Bloqueados
-        </button>
-        <button
-          onClick={() => setActiveTab('servicos')}
-          className={`px-6 py-3 font-medium transition-colors whitespace-nowrap ${
-            activeTab === 'servicos'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Settings className="inline mr-2" size={20} />
-          Serviços
-        </button>
-        <button
-          onClick={() => setActiveTab('horarios')}
-          className={`px-6 py-3 font-medium transition-colors whitespace-nowrap ${
-            activeTab === 'horarios'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
-          }`}
-        >
-          <Clock className="inline mr-2" size={20} />
-          Horários
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div className="max-w-7xl mx-auto px-4 pb-8">
-    {activeTab === 'agendamentos' && (
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b">
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-3 text-gray-400" size={20} />
-                <input
-                  type="text"
-                  placeholder="Buscar por cliente ou serviço..."
-                  value={busca}
-                  onChange={(e) => setBusca(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-            </div>
-            <div className="flex gap-2">
-              <select
-                value={filtro}
-                onChange={(e) => setFiltro(e.target.value)}
-                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="todos">Todos</option>
-                <option value="pendente">Pendentes</option>
-                <option value="confirmado">Confirmados</option>
-                <option value="cancelado">Cancelados</option>
-                <option value="concluido">Concluídos</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Serviço</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data/Hora</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telefone</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pagamento</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {agendamentosFiltrados.map((ag) => (
-                <tr key={ag.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="font-medium text-gray-900">{ag.cliente}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">{ag.servico}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
-                    {new Date(ag.data + 'T00:00:00').toLocaleDateString('pt-BR')} às {ag.hora}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">{ag.telefone}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
-                    R$ {ag.valor.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="space-y-1">
-                      <div className="text-xs text-gray-500">
-                        {metodosPagamento[ag.metodoPagamento]?.icon} {metodosPagamento[ag.metodoPagamento]?.nome}
-                      </div>
-                      <select
-                        value={ag.pagamentoStatus}
-                        onChange={(e) => alterarPagamento(ag.id, e.target.value)}
-                        className={`px-2 py-1 rounded text-xs font-medium ${pagamentoColors[ag.pagamentoStatus]}`}
-                      >
-                        <option value="pendente">Pendente</option>
-                        <option value="pago">Pago</option>
-                        <option value="cancelado">Cancelado</option>
-                      </select>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <select
-                      value={ag.status}
-                      onChange={(e) => alterarStatus(ag.id, e.target.value)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[ag.status]}`}
-                    >
-                      <option value="pendente">Pendente</option>
-                      <option value="confirmado">Confirmado</option>
-                      <option value="cancelado">Cancelado</option>
-                      <option value="concluido">Concluído</option>
-                    </select>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => abrirModalBloquear(ag)}
-                        className="text-orange-600 hover:text-orange-800"
-                        title="Bloquear cliente"
-                      >
-                        <Ban size={18} />
-                      </button>
-                      <button
-                        onClick={() => excluirAgendamento(ag.id)}
-                        className="text-red-600 hover:text-red-800"
-                        title="Excluir agendamento"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )}
-
-    {activeTab === 'calendario' && (
-      <div className="space-y-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-xl font-bold text-gray-800 capitalize">
-              {mesSelecionado.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
-            </h2>
-            <div className="flex gap-2">
-              <button
-                onClick={mesAnterior}
-                className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
-              >
-                ← Anterior
-              </button>
-              <button
-                onClick={proximoMes}
-                className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
-              >
-                Próximo →
-              </button>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-7 gap-2">
-            {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(dia => (
-              <div key={dia} className="text-center font-medium text-gray-600 py-2">
-                {dia}
-              </div>
-            ))}
-            {getDiasDoMes(mesSelecionado).map((data, idx) => {
-              const agendamentosNoDia = data ? getAgendamentosData(data) : [];
-              const isHoje = data && data.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
-              const isSelecionado = data && data.toISOString().split('T')[0] === dataSelecionada;
-              
-              return (
-                <div
-                  key={idx}
-                  onClick={() => data && setDataSelecionada(data.toISOString().split('T')[0])}
-                  className={`min-h-24 p-2 border rounded-lg cursor-pointer transition-all ${
-                    !data ? 'bg-gray-50' : 
-                    isSelecionado ? 'bg-blue-100 border-blue-500' :
-                    isHoje ? 'bg-green-50 border-green-300' :
-                    'bg-white hover:bg-gray-50'
-                  }`}
-                >
-                  {data && (
-                    <>
-                      <div className={`text-sm font-medium mb-1 ${isHoje ? 'text-green-600' : 'text-gray-700'}`}>
-                        {data.getDate()}
-                      </div>
-                      {agendamentosNoDia.length > 0 && (
-                        <div className="space-y-1">
-                          {agendamentosNoDia.slice(0, 2).map(ag => (
-                            <div key={ag.id} className="text-xs bg-blue-500 text-white px-1 py-0.5 rounded truncate">
-                              {ag.hora} {ag.cliente}
-                            </div>
-                          ))}
-                          {agendamentosNoDia.length > 2 && (
-                            <div className="text-xs text-blue-600 font-medium">
-                              +{agendamentosNoDia.length - 2} mais
-                            </div>
-                          )}
+    function renderLogin() {
+        return `
+            <div class="min-h-screen bg-gradient-to-br from-blue-500 via-blue-600 to-blue-800 flex items-center justify-center p-4">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-white text-center">
+                        <div class="bg-white bg-opacity-20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <span class="text-4xl">🔒</span>
                         </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        <div className="bg-white rounded-lg shadow p-6">
-          <h3 className="text-lg font-bold text-gray-800 mb-4">
-            Agendamentos - {new Date(dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR')}
-          </h3>
-          {agendamentosDataSelecionada.length > 0 ? (
-            <div className="space-y-3">
-              {agendamentosDataSelecionada.map(ag => (
-                <div key={ag.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3">
-                      <div className="font-medium text-gray-900">{ag.hora}</div>
-                      <div className="text-gray-600">{ag.cliente}</div>
-                      <span className={`px-2 py-1 rounded-full text-xs ${statusColors[ag.status]}`}>
-                        {ag.status}
-                      </span>
+                        <h1 class="text-3xl font-bold mb-2">Painel Administrativo</h1>
+                        <p class="text-blue-100">Faça login para acessar o sistema</p>
                     </div>
-                    <div className="text-sm text-gray-500 mt-1">
-                      {ag.servico} • R$ {ag.valor.toFixed(2)} • {metodosPagamento[ag.metodoPagamento]?.nome}
+                    <form id="loginForm" class="p-8">
+                        ${state.erroLogin ? `
+                            <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+                                ${state.erroLogin}
+                            </div>
+                        ` : ''}
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2">Email</label>
+                            <input type="email" id="email" value="${state.email}" placeholder="seu@email.com" required 
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2">Senha</label>
+                            <div class="relative">
+                                <input type="${state.mostrarSenha ? 'text' : 'password'}" id="senha" value="${state.senha}" placeholder="••••••••" required 
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12">
+                                <button type="button" id="toggleSenha" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700">
+                                    ${state.mostrarSenha ? '👁️' : '👁️‍🗨️'}
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors mb-4">
+                            Entrar
+                        </button>
+                        <div class="border-t pt-6 mt-6">
+                            <p class="text-sm text-gray-600 mb-3 font-medium">Credenciais de teste:</p>
+                            <div class="space-y-2 text-xs">
+                                <div class="bg-gray-50 p-3 rounded border">
+                                    <p class="font-medium text-gray-700">Administrador:</p>
+                                    <p class="text-gray-600">admin@sistema.com / admin123</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded border">
+                                    <p class="font-medium text-gray-700">Gerente:</p>
+                                    <p class="text-gray-600">gerente@sistema.com / gerente123</p>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded border">
+                                    <p class="font-medium text-gray-700">Atendente:</p>
+                                    <p class="text-gray-600">atendente@sistema.com / atendente123</p>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderPainel() {
+        const stats = {
+            total: state.agendamentos.length,
+            confirmados: state.agendamentos.filter(a => a.status === 'confirmado').length,
+            pendentes: state.agendamentos.filter(a => a.status === 'pendente').length,
+            receita: state.agendamentos.filter(a => a.pagamentoStatus === 'pago').reduce((sum, a) => sum + a.valor, 0),
+            bloqueados: state.clientesBloqueados.length
+        };
+
+        return `
+            <div class="min-h-screen bg-gray-50">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 shadow-lg">
+                    <div class="max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-4">
+                        <div>
+                            <h1 class="text-3xl font-bold mb-2">Painel Administrativo</h1>
+                            <p class="text-blue-100">Gerencie seus agendamentos e configurações</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="text-right">
+                                <p class="text-sm text-blue-100">Logado como:</p>
+                                <p class="font-medium">${state.usuarioLogado?.nome}</p>
+                            </div>
+                            <button id="btnLogout" class="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+                                🚪 Sair
+                            </button>
+                        </div>
                     </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => abrirModalBloquear(ag)}
-                      className="text-orange-600 hover:text-orange-800 p-2"
-                    >
-                      <Ban size={18} />
-                    </button>
-                    <button
-                      onClick={() => excluirAgendamento(ag.id)}
-                      className="text-red-600 hover:text-red-800 p-2"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-gray-500 text-center py-8">Nenhum agendamento para esta data</p>
-          )}
-        </div>
-      </div>
-    )}
 
-    {activeTab === 'bloqueados' && (
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b">
-          <h2 className="text-xl font-bold text-gray-800">Clientes Bloqueados</h2>
-          <p className="text-sm text-gray-600 mt-1">Clientes que não podem fazer novos agendamentos</p>
-        </div>
-        <div className="overflow-x-auto">
-          {clientesBloqueados.length > 0 ? (
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telefone</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Motivo</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data Bloqueio</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {clientesBloqueados.map((cliente) => (
-                  <tr key={cliente.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-medium text-gray-900">{cliente.nome}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">{cliente.telefone}</td>
-                    <td className="px-6 py-4 text-gray-600">{cliente.motivo}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">
-                      {new Date(cliente.dataBloqueio + 'T00:00:00').toLocaleDateString('pt-BR')}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <button
-                        onClick={() => desbloquearCliente(cliente.id)}
-                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm"
-                      >
-                        Desbloquear
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className="p-8 text-center text-gray-500">
-              <Ban size={48} className="mx-auto mb-4 text-gray-300" />
-              <p>Nenhum cliente bloqueado</p>
-            </div>
-          )}
-        </div>
-      </div>
-    )}
-
-    {activeTab === 'servicos' && (
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b flex justify-between items-center">
-          <h2 className="text-xl font-bold text-gray-800">Gerenciar Serviços</h2>
-          <button
-            onClick={() => setModalServico(true)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
-          >
-            <Plus size={20} />
-            Novo Serviço
-          </button>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Serviço</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Duração</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {servicos.map((servico) => (
-                <tr key={servico.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
-                    {servico.nome}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
-                    {servico.duracao} min
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
-                    R$ {servico.valor.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <button
-                      onClick={() => toggleServicoAtivo(servico.id)}
-                      className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        servico.ativo
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-gray-100 text-gray-800'
-                      }`}
-                    >
-                      {servico.ativo ? 'Ativo' : 'Inativo'}
-                    </button>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap flex gap-2">
-                    <button
-                      onClick={() => excluirServico(servico.id)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    )}
-
-    {activeTab === 'horarios' && (
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b">
-          <h2 className="text-xl font-bold text-gray-800">Horários de Funcionamento</h2>
-        </div>
-        <div className="p-6">
-          <div className="space-y-4">
-            {Object.entries(horarios).map(([dia, config]) => (
-              <div key={dia} className="flex items-center gap-4 p-4 border rounded-lg">
-                <div className="w-32">
-                  <label className="font-medium text-gray-700 capitalize">{dia}</label>
+                <!-- Stats Cards -->
+                <div class="max-w-7xl mx-auto px-4 -mt-6 mb-8">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                        <div class="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Total</p>
+                                    <p class="text-2xl font-bold text-gray-800">${stats.total}</p>
+                                </div>
+                                <span class="text-4xl">📅</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Confirmados</p>
+                                    <p class="text-2xl font-bold text-gray-800">${stats.confirmados}</p>
+                                </div>
+                                <span class="text-4xl">✅</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Pendentes</p>
+                                    <p class="text-2xl font-bold text-gray-800">${stats.pendentes}</p>
+                                </div>
+                                <span class="text-4xl">⏰</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Receita</p>
+                                    <p class="text-2xl font-bold text-gray-800">R$ ${stats.receita.toFixed(2)}</p>
+                                </div>
+                                <span class="text-4xl">💰</span>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-500 text-sm">Bloqueados</p>
+                                    <p class="text-2xl font-bold text-gray-800">${stats.bloqueados}</p>
+                                </div>
+                                <span class="text-4xl">🚫</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <input
-                  type="checkbox"
-                  checked={config.ativo}
-                  onChange={(e) => setHorarios({
-                    ...horarios,
-                    [dia]: { ...config, ativo: e.target.checked }
-                  })}
-                  className="w-5 h-5"
-                />
-                <input
-                  type="time"
-                  value={config.inicio}
-                  disabled={!config.ativo}
-                  onChange={(e) => setHorarios({
-                    ...horarios,
-                    [dia]: { ...config, inicio: e.target.value }
-                  })}
-                  className="px-3 py-2 border rounded-lg disabled:bg-gray-100"
-                />
-                <span>até</span>
-                <input
-                  type="time"
-                  value={config.fim}
-                  disabled={!config.ativo}
-                  onChange={(e) => setHorarios({
-                    ...horarios,
-                    [dia]: { ...config, fim: e.target.value }
-                  })}
-                  className="px-3 py-2 border rounded-lg disabled:bg-gray-100"
-                />
-              </div>
-            ))}
-          </div>
-          <button className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-            Salvar Horários
-          </button>
-        </div>
-      </div>
-    )}
-  </div>
 
-  {modalServico && (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-md w-full p-6">
-        <h3 className="text-xl font-bold mb-4">Novo Serviço</h3>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-            <input
-              type="text"
-              value={novoServico.nome}
-              onChange={(e) => setNovoServico({...novoServico, nome: e.target.value})}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Duração (min)</label>
-            <input
-              type="number"
-              value={novoServico.duracao}
-              onChange={(e) => setNovoServico({...novoServico, duracao: e.target.value})}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
-            <input
-              type="number"
-              step="0.01"
-              value={novoServico.valor}
-              onChange={(e) => setNovoServico({...novoServico, valor: e.target.value})}
-              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-        <div className="flex gap-3 mt-6">
-          <button
-            onClick={adicionarServico}
-            className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-          >
-            Adicionar
-          </button>
-          <button
-            onClick={() => setModalServico(false)}
-            className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300"
-          >
-            Cancelar
-          </button>
-        </div>
-      </div>
-    </div>
-  )}
+                <!-- Tabs -->
+                <div class="max-w-7xl mx-auto px-4 mb-6">
+                    <div class="bg-white rounded-lg shadow">
+                        <div class="flex overflow-x-auto border-b">
+                            ${['agendamentos', 'calendario', 'bloqueados', 'servicos', 'horarios', 'links'].map(tab => `
+                                <button onclick="changeTab('${tab}')" class="px-6 py-3 font-medium transition-colors whitespace-nowrap ${state.activeTab === tab ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}">
+                                    ${getTabIcon(tab)} ${getTabName(tab)}
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
 
-  {modalBloquear && (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg max-w-md w-full p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="bg-red-100 p-3 rounded-full">
-            <Ban className="text-red-600" size={24} />
-          </div>
-          <h3 className="text-xl font-bold">Bloquear Cliente</h3>
-        </div>
-        
-        {clienteParaBloquear && (
-          <div className="bg-gray-50 p-4 rounded-lg mb-4">
-            <p className="text-sm text-gray-600">Cliente:</p>
-            <p className="font-medium text-gray-900">{clienteParaBloquear.cliente}</p>
-            <p className="text-sm text-gray-600 mt-1">{clienteParaBloquear.telefone}</p>
-          </div>
-        )}
+                <!-- Content -->
+                <div class="max-w-7xl mx-auto px-4 pb-8">
+                    ${renderTabContent()}
+                </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Motivo do bloqueio *
-          </label>
-          <textarea
-            value={motivoBloqueio}
-            onChange={(e) => setMotivoBloqueio(e.target.value)}
-            placeholder="Ex: Não compareceu 3 vezes sem avisar"
-            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 h-24 resize-none"
-          />
-        </div>
+                ${state.modalBloquear ? renderModalBloquear() : ''}
+                ${state.modalServico ? renderModalServico() : ''}
+            </div>
+        `;
+    }
 
-        <div className="flex gap-3 mt-6">
-          <button
-            onClick={bloquearCliente}
-            className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-medium"
-          >
-            Bloquear Cliente
-          </button>
-          <button
-            onClick={() => {
-              setModalBloquear(false);
-              setClienteParaBloquear(null);
-              setMotivoBloqueio('');
-            }}
-            className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300"
-          >
-            Cancelar
-          </button>
-        </div>
-      </div>
-    </div>
-  )}
-</div>
+    function getTabIcon(tab) {
+        const icons = {
+            agendamentos: '📋',
+            calendario: '📅',
+            bloqueados: '🚫',
+            servicos: '⚙️',
+            horarios: '🕐',
+            links: '🔗'
+        };
+        return icons[tab] || '';
+    }
+
+    function getTabName(tab) {
+        const names = {
+            agendamentos: 'Agendamentos',
+            calendario: 'Calendário',
+            bloqueados: 'Bloqueados',
+            servicos: 'Serviços',
+            horarios: 'Horários',
+            links: 'Links'
+        };
+        return names[tab] || tab;
+    }
+
+    function renderTabContent() {
+        switch(state.activeTab) {
+            case 'agendamentos': return renderAgendamentos();
+            case 'calendario': return renderCalendario();
+            case 'bloqueados': return renderBloqueados();
+            case 'servicos': return renderServicos();
+            case 'horarios': return renderHorarios();
+            case 'links': return renderLinks();
+            default: return '';
+        }
+    }
+
+    function renderAgendamentos() {
+        const filtrados = state.agendamentos.filter(ag => {
+            const matchFiltro = state.filtro === 'todos' || ag.status === state.filtro;
+            const matchBusca = ag.cliente.toLowerCase().includes(state.busca.toLowerCase()) || 
+                               ag.servico.toLowerCase().includes(state.busca.toLowerCase());
+            return matchFiltro && matchBusca;
+        });
+
+        return `
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-6 border-b">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-1">
+                            <input type="text" id="busca" value="${state.busca}" placeholder="Buscar por cliente ou serviço..." 
+                                class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <select id="filtro" class="px-4 py-2 border rounded-lg">
+                            <option value="todos" ${state.filtro === 'todos' ? 'selected' : ''}>Todos</option>
+                            <option value="pendente" ${state.filtro === 'pendente' ? 'selected' : ''}>Pendentes</option>
+                            <option value="confirmado" ${state.filtro === 'confirmado' ? 'selected' : ''}>Confirmados</option>
+                            <option value="cancelado" ${state.filtro === 'cancelado' ? 'selected' : ''}>Cancelados</option>
+                            <option value="concluido" ${state.filtro === 'concluido' ? 'selected' : ''}>Concluídos</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Serviço</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data/Hora</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telefone</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pagamento</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            ${filtrados.map(ag => `
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">${ag.cliente}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-600">${ag.servico}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-600">${formatarData(ag.data)} às ${ag.hora}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-600">${ag.telefone}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-600">R$ ${ag.valor.toFixed(2)}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-xs text-gray-500 mb-1">
+                                            ${metodosPagamento[ag.metodoPagamento]?.icon} ${metodosPagamento[ag.metodoPagamento]?.nome}
+                                        </div>
+                                        <select onchange="alterarPagamento(${ag.id}, this.value)" class="px-2 py-1 rounded text-xs font-medium ${getCorPagamento(ag.pagamentoStatus)}">
+                                            <option value="pendente" ${ag.pagamentoStatus === 'pendente' ? 'selected' : ''}>Pendente</option>
+                                            <option value="pago" ${ag.pagamentoStatus === 'pago' ? 'selected' : ''}>Pago</option>
+                                            <option value="cancelado" ${ag.pagamentoStatus === 'cancelado' ? 'selected' : ''}>Cancelado</option>
+                                        </select>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <select onchange="alterarStatus(${ag.id}, this.value)" class="px-3 py-1 rounded-full text-xs font-medium border ${getCorStatus(ag.status)}">
+                                            <option value="pendente" ${ag.status === 'pendente' ? 'selected' : ''}>Pendente</option>
+                                            <option value="confirmado" ${ag.status === 'confirmado' ? 'selected' : ''}>Confirmado</option>
+                                            <option value="cancelado" ${ag.status === 'cancelado' ? 'selected' : ''}>Cancelado</option>
+                                            <option value="concluido" ${ag.status === 'concluido' ? 'selected' : ''}>Concluído</option>
+                                        </select>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button onclick="abrirModalBloquear(${ag.id})" class="text-orange-600 hover:text-orange-800 mr-2">🚫</button>
+                                        <button onclick="excluirAgendamento(${ag.id})" class="text-red-600 hover:text-red-800">🗑️</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderBloqueados() {
+        return `
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-6 border-b">
+                    <h2 class="text-xl font-bold text-gray-800">Clientes Bloqueados</h2>
+                    <p class="text-sm text-gray-600 mt-1">Clientes que não podem fazer novos agendamentos</p>
+                </div>
+                <div class="overflow-x-auto">
+                    ${state.clientesBloqueados.length > 0 ? `
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telefone</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Motivo</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data Bloqueio</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200">
+                                ${state.clientesBloqueados.map(cliente => `
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">${cliente.nome}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-600">${cliente.telefone}</td>
+                                        <td class="px-6 py-4 text-gray-600">${cliente.motivo}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-600">${formatarData(cliente.dataBloqueio)}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <button onclick="desbloquearCliente(${cliente.id})" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm">
+                                                Desbloquear
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    ` : `
+                        <div class="p-8 text-center text-gray-500">
+                            <span class="text-6xl">🚫</span>
+                            <p class="mt-4">Nenhum cliente bloqueado</p>
+                        </div>
+                    `}
+                </div>
+            </div>
+        `;
+    }
+
+    function renderServicos() {
+        return `
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-6 border-b flex justify-between items-center">
+                    <h2 class="text-xl font-bold text-gray-800">Gerenciar Serviços</h2>
+                    <button onclick="abrirModalServico()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                        ➕ Novo Serviço
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Serviço</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Duração</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            ${state.servicos.map(servico => `
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900">${servico.nome}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-600">${servico.duracao} min</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-600">R$ ${servico.valor.toFixed(2)}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button onclick="toggleServicoAtivo(${servico.id})" class="px-3 py-1 rounded-full text-xs font-medium ${servico.ativo ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
+                                            ${servico.ativo ? 'Ativo' : 'Inativo'}
+                                        </button>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <button onclick="excluirServico(${servico.id})" class="text-red-600 hover:text-red-800">🗑️</button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderHorarios() {
+        return `
+            <div class="bg-white rounded-lg shadow">
+                <div class="p-6 border-b">
+                    <h2 class="text-xl font-bold text-gray-800">Horários de Funcionamento</h2>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        ${Object.entries(state.horarios).map(([dia, config]) => `
+                            <div class="flex items-center gap-4 p-4 border rounded-lg">
+                                <div class="w-32">
+                                    <label class="font-medium text-gray-700 capitalize">${dia}</label>
+                                </div>
+                                <input type="checkbox" ${config.ativo ? 'checked' : ''} onchange="toggleHorarioDia('${dia}')" class="w-5 h-5">
+                                <input type="time" value="${config.inicio}" ${!config.ativo ? 'disabled' : ''} onchange="setHorarioInicio('${dia}', this.value)" class="px-3 py-2 border rounded-lg disabled:bg-gray-100">
+                                <span>até</span>
+                                <input type="time" value="${config.fim}" ${!config.ativo ? 'disabled' : ''} onchange="setHorarioFim('${dia}', this.value)" class="px-3 py-2 border rounded-lg disabled:bg-gray-100">
+                            </div>
+                        `).join('')}
+                    </div>
+                    <button onclick="salvarHorarios()" class="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                        Salvar Horários
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderCalendario() {
+        return `
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-bold text-gray-800 mb-4">Calendário - Em desenvolvimento</h3>
+                <p class="text-gray-600">Visualização de calendário será implementada em breve.</p>
+            </div>
+        `;
+    }
+
+    function renderLinks() {
+        return `
+            <div class="space-y-6">
+                <div class="bg-white rounded-lg shadow">
+                    <div class="p-6 border-b">
+                        <h2 class="text-xl font-bold text-gray-800">Links do Sistema</h2>
+                        <p class="text-sm text-gray-600 mt-1">Compartilhe estes links para acesso ao sistema</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-6">
+                            <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-lg border border-blue-200">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="bg-blue-600 p-2 rounded-lg">
+                                        <span class="text-white text-2xl">🔒</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-800">Painel Administrativo</h3>
+                                        <p class="text-sm text-gray-600">Acesso restrito para administradores</p>
+                                    </div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-blue-300 mb-3">
+                                    <div class="flex items-center justify-between">
+                                        <code class="text-sm text-blue-600">https://sistema.com/admin</code>
+                                        <button onclick="copiarLink('https://sistema.com/admin')" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 text-sm">
+                                            Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-green-50 to-green-100 p-6 rounded-lg border border-green-200">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="bg-green-600 p-2 rounded-lg">
+                                        <span class="text-white text-2xl">📅</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-800">Agendamento de Clientes</h3>
+                                        <p class="text-sm text-gray-600">Link público para clientes agendarem</p>
+                                    </div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-green-300 mb-3">
+                                    <div class="flex items-center justify-between">
+                                        <code class="text-sm text-green-600">https://sistema.com/agendar</code>
+                                        <button onclick="copiarLink('https://sistema.com/agendar')" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm">
+                                            Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-purple-50 to-purple-100 p-6 rounded-lg border border-purple-200">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="bg-purple-600 p-2 rounded-lg">
+                                        <span class="text-white text-2xl">👤</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-gray-800">Consultar Agendamento</h3>
+                                        <p class="text-sm text-gray-600">Clientes podem consultar seus agendamentos</p>
+                                    </div>
+                                </div>
+                                <div class="bg-white p-4 rounded-lg border border-purple-300 mb-3">
+                                    <div class="flex items-center justify-between">
+                                        <code class="text-sm text-purple-600">https://sistema.com/consultar</code>
+                                        <button onclick="copiarLink('https://sistema.com/consultar')" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 text-sm">
+                                            Copiar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderModalBloquear() {
+        const ag = state.agendamentos.find(a => a.id === state.clienteParaBloquear);
+        if (!ag) return '';
+
+        return `
+            <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div class="bg-white rounded-lg max-w-md w-full p-6">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="bg-red-100 p-3 rounded-full">
+                            <span class="text-2xl">🚫</span>
+                        </div>
+                        <h3 class="text-xl font-bold">Bloquear Cliente</h3>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg mb-4">
+                        <p class="text-sm text-gray-600">Cliente:</p>
+                        <p class="font-medium text-gray-900">${ag.cliente}</p>
+                        <p class="text-sm text-gray-600 mt-1">${ag.telefone}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Motivo do bloqueio *</label>
+                        <textarea id="motivoBloqueio" placeholder="Ex: Não compareceu 3 vezes sem avisar" 
+                            class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 h-24 resize-none">${state.motivoBloqueio}</textarea>
+                    </div>
+                    <div class="flex gap-3 mt-6">
+                        <button onclick="confirmarBloquear()" class="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-medium">
+                            Bloquear Cliente
+                        </button>
+                        <button onclick="fecharModalBloquear()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderModalServico() {
+        return `
+            <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div class="bg-white rounded-lg max-w-md w-full p-6">
+                    <h3 class="text-xl font-bold mb-4">Novo Serviço</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+                            <input type="text" id="servicoNome" value="${state.novoServico.nome}" 
+                                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Duração (min)</label>
+                            <input type="number" id="servicoDuracao" value="${state.novoServico.duracao}" 
+                                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
+                            <input type="number" step="0.01" id="servicoValor" value="${state.novoServico.valor}" 
+                                class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                    </div>
+                    <div class="flex gap-3 mt-6">
+                        <button onclick="confirmarServico()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+                            Adicionar
+                        </button>
+                        <button onclick="fecharModalServico()" class="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Funções auxiliares
+    function formatarData(dataStr) {
+        const data = new Date(dataStr + 'T00:00:00');
+        return data.toLocaleDateString('pt-BR');
+    }
+
+    function getCorStatus(status) {
+        const cores = {
+            pendente: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+            confirmado: 'bg-green-100 text-green-800 border-green-300',
+            cancelado: 'bg-red-100 text-red-800 border-red-300',
+            concluido: 'bg-blue-100 text-blue-800 border-blue-300'
+        };
+        return cores[status] || '';
+    }
+
+    function getCorPagamento(status) {
+        const cores = {
+            pago: 'bg-green-100 text-green-800',
+            pendente: 'bg-yellow-100 text-yellow-800',
+            cancelado: 'bg-red-100 text-red-800'
+        };
+        return cores[status] || '';
+    }
+
+    // Funções globais
+    function changeTab(tab) {
+        state.activeTab = tab;
+        render();
+    }
+
+    function alterarStatus(id, novoStatus) {
+        state.agendamentos = state.agendamentos.map(ag => 
+            ag.id === id ? { ...ag, status: novoStatus } : ag
+        );
+        render();
+    }
+
+    function alterarPagamento(id, novoStatus) {
+        state.agendamentos = state.agendamentos.map(ag => 
+            ag.id === id ? { ...ag, pagamentoStatus: novoStatus } : ag
+        );
+        render();
+    }
+
+    function excluirAgendamento(id) {
+        if (confirm('Deseja realmente excluir este agendamento?')) {
+            state.agendamentos = state.agendamentos.filter(ag => ag.id !== id);
+            render();
+        }
+    }
+
+    function abrirModalBloquear(id) {
+        state.modalBloquear = true;
+        state.clienteParaBloquear = id;
+        render();
+    }
+
+    function fecharModalBloquear() {
+        state.modalBloquear = false;
+        state.clienteParaBloquear = null;
+        state.motivoBloqueio = '';
+        render();
+    }
+
+    function confirmarBloquear() {
+        const motivo = document.getElementById('motivoBloqueio').value;
+        if (!motivo.trim()) {
+            alert('Por favor, informe o motivo do bloqueio');
+            return;
+        }
+        const ag = state.agendamentos.find(a => a.id === state.clienteParaBloquear);
+        if (ag) {
+            state.clientesBloqueados.push({
+                id: state.clientesBloqueados.length + 1,
+                nome: ag.cliente,
+                telefone: ag.telefone,
+                motivo: motivo,
+                dataBloqueio: new Date().toISOString().split('T')[0]
+            });
+            alert('Cliente bloqueado com sucesso!');
+            fecharModalBloquear();
+        }
+    }
+
+    function desbloquearCliente(id) {
+        if (confirm('Deseja desbloquear este cliente?')) {
+            state.clientesBloqueados = state.clientesBloqueados.filter(c => c.id !== id);
+            render();
+        }
+    }
+
+    function abrirModalServico() {
+        state.modalServico = true;
+        render();
+    }
+
+    function fecharModalServico() {
+        state.modalServico = false;
+        state.novoServico = { nome: '', duracao: '', valor: '' };
+        render();
+    }
+
+    function confirmarServico() {
+        const nome = document.getElementById('servicoNome').value;
+        const duracao = document.getElementById('servicoDuracao').value;
+        const valor = document.getElementById('servicoValor').value;
+
+        if (!nome || !duracao || !valor) {
+            alert('Preencha todos os campos');
+            return;
+        }
+
+        state.servicos.push({
+            id: state.servicos.length + 1,
+            nome: nome,
+            duracao: parseInt(duracao),
+            valor: parseFloat(valor),
+            ativo: true
+        });
+
+        alert('Serviço adicionado com sucesso!');
+        fecharModalServico();
+    }
+
+    function toggleServicoAtivo(id) {
+        state.servicos = state.servicos.map(s => 
+            s.id === id ? { ...s, ativo: !s.ativo } : s
+        );
+        render();
+    }
+
+    function excluirServico(id) {
+        if (confirm('Deseja realmente excluir este serviço?')) {
+            state.servicos = state.servicos.filter(s => s.id !== id);
+            render();
+        }
+    }
+
+    function toggleHorarioDia(dia) {
+        state.horarios[dia].ativo = !state.horarios[dia].ativo;
+        render();
+    }
+
+    function setHorarioInicio(dia, valor) {
+        state.horarios[dia].inicio = valor;
+    }
+
+    function setHorarioFim(dia, valor) {
+        state.horarios[dia].fim = valor;
+    }
+
+    function salvarHorarios() {
+        alert('Horários salvos com sucesso!');
+    }
+
+    function copiarLink(link) {
+        navigator.clipboard.writeText(link);
+        alert('Link copiado para a área de transferência!');
+    }
+
+    function attachEventListeners() {
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                state.email = document.getElementById('email').value;
+                state.senha = document.getElementById('senha').value;
+                
+                const admin = admins.find(a => a.email === state.email && a.senha === state.senha);
+                
+                if (admin) {
+                    state.autenticado = true;
+                    state.usuarioLogado = admin;
+                    state.erroLogin = '';
+                    render();
+                } else {
+                    state.erroLogin = 'Email ou senha incorretos!';
+                    render();
+                }
+            });
+
+            const toggleSenha = document.getElementById('toggleSenha');
+            if (toggleSenha) {
+                toggleSenha.addEventListener('click', () => {
+                    state.mostrarSenha = !state.mostrarSenha;
+                    render();
+                });
+            }
+        }
+
+        const btnLogout = document.getElementById('btnLogout');
+        if (btnLogout) {
+            btnLogout.addEventListener('click', () => {
+                state.autenticado = false;
+                state.usuarioLogado = null;
+                state.activeTab = 'agendamentos';
+                render();
+            });
+        }
+
+        const busca = document.getElementById('busca');
+        if (busca) {
+            busca.addEventListener('input', (e) => {
+                state.busca = e.target.value;
+                render();
+            });
+        }
+
+        const filtro = document.getElementById('filtro');
+        if (filtro) {
+            filtro.addEventListener('change', (e) => {
+                state.filtro = e.target.value;
+                render();
+            });
+        }
+    }
+
+    // Iniciar aplicação
+    render();
+</script>
 ```
 
-);
-};
-
-export default AdminPanel;
+</body>
+</html>
