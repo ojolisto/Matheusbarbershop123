@@ -1,7 +1,21 @@
 import React, { useState } from ‘react’;
-import { Calendar, Users, Clock, CheckCircle, XCircle, Search, Filter, Edit, Trash2, Plus, Settings, Ban, DollarSign, CreditCard, Wallet } from ‘lucide-react’;
+import { Calendar, Users, Clock, CheckCircle, XCircle, Search, Filter, Edit, Trash2, Plus, Settings, Ban, DollarSign, CreditCard, Wallet, Lock, LogOut, Eye, EyeOff } from ‘lucide-react’;
 
 const AdminPanel = () => {
+const [autenticado, setAutenticado] = useState(false);
+const [email, setEmail] = useState(’’);
+const [senha, setSenha] = useState(’’);
+const [mostrarSenha, setMostrarSenha] = useState(false);
+const [erroLogin, setErroLogin] = useState(’’);
+
+// Credenciais de administrador (em produção, isso viria de um backend)
+const admins = [
+{ email: ‘admin@sistema.com’, senha: ‘admin123’, nome: ‘Administrador’ },
+{ email: ‘gerente@sistema.com’, senha: ‘gerente123’, nome: ‘Gerente’ },
+{ email: ‘atendente@sistema.com’, senha: ‘atendente123’, nome: ‘Atendente’ }
+];
+
+const [usuarioLogado, setUsuarioLogado] = useState(null);
 const [activeTab, setActiveTab] = useState(‘agendamentos’);
 const [agendamentos, setAgendamentos] = useState([
 {
@@ -114,6 +128,31 @@ pix: { nome: ‘PIX’, icon: ‘📱’ },
 credito: { nome: ‘Cartão Crédito’, icon: ‘💳’ },
 debito: { nome: ‘Cartão Débito’, icon: ‘💳’ },
 dinheiro: { nome: ‘Dinheiro’, icon: ‘💵’ }
+};
+
+const handleLogin = (e) => {
+e.preventDefault();
+setErroLogin(’’);
+
+```
+const admin = admins.find(a => a.email === email && a.senha === senha);
+
+if (admin) {
+  setAutenticado(true);
+  setUsuarioLogado(admin);
+  setEmail('');
+  setSenha('');
+} else {
+  setErroLogin('Email ou senha incorretos!');
+}
+```
+
+};
+
+const handleLogout = () => {
+setAutenticado(false);
+setUsuarioLogado(null);
+setActiveTab(‘agendamentos’);
 };
 
 const agendamentosFiltrados = agendamentos.filter(ag => {
@@ -240,12 +279,114 @@ setMesSelecionado(new Date(mesSelecionado.getFullYear(), mesSelecionado.getMonth
 
 const agendamentosDataSelecionada = agendamentos.filter(ag => ag.data === dataSelecionada);
 
+// TELA DE LOGIN
+if (!autenticado) {
+return (
+<div className="min-h-screen bg-gradient-to-br from-blue-500 via-blue-600 to-blue-800 flex items-center justify-center p-4">
+<div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden">
+<div className="bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-white text-center">
+<div className="bg-white bg-opacity-20 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4">
+<Lock size={40} />
+</div>
+<h1 className="text-3xl font-bold mb-2">Painel Administrativo</h1>
+<p className="text-blue-100">Faça login para acessar o sistema</p>
+</div>
+
+```
+      <form onSubmit={handleLogin} className="p-8">
+        {erroLogin && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+            {erroLogin}
+          </div>
+        )}
+
+        <div className="mb-6">
+          <label className="block text-gray-700 font-medium mb-2">Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="seu@email.com"
+            required
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-gray-700 font-medium mb-2">Senha</label>
+          <div className="relative">
+            <input
+              type={mostrarSenha ? 'text' : 'password'}
+              value={senha}
+              onChange={(e) => setSenha(e.target.value)}
+              placeholder="••••••••"
+              required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12"
+            />
+            <button
+              type="button"
+              onClick={() => setMostrarSenha(!mostrarSenha)}
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+            >
+              {mostrarSenha ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors mb-4"
+        >
+          Entrar
+        </button>
+
+        <div className="border-t pt-6 mt-6">
+          <p className="text-sm text-gray-600 mb-3 font-medium">Credenciais de teste:</p>
+          <div className="space-y-2 text-xs">
+            <div className="bg-gray-50 p-3 rounded border">
+              <p className="font-medium text-gray-700">Administrador:</p>
+              <p className="text-gray-600">admin@sistema.com / admin123</p>
+            </div>
+            <div className="bg-gray-50 p-3 rounded border">
+              <p className="font-medium text-gray-700">Gerente:</p>
+              <p className="text-gray-600">gerente@sistema.com / gerente123</p>
+            </div>
+            <div className="bg-gray-50 p-3 rounded border">
+              <p className="font-medium text-gray-700">Atendente:</p>
+              <p className="text-gray-600">atendente@sistema.com / atendente123</p>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+);
+```
+
+}
+
+// PAINEL ADMINISTRATIVO (após login)
 return (
 <div className="min-h-screen bg-gray-50">
 <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 shadow-lg">
-<div className="max-w-7xl mx-auto">
+<div className="max-w-7xl mx-auto flex justify-between items-center">
+<div>
 <h1 className="text-3xl font-bold mb-2">Painel Administrativo</h1>
 <p className="text-blue-100">Gerencie seus agendamentos e configurações</p>
+</div>
+<div className="flex items-center gap-4">
+<div className="text-right">
+<p className="text-sm text-blue-100">Logado como:</p>
+<p className="font-medium">{usuarioLogado?.nome}</p>
+</div>
+<button
+onClick={handleLogout}
+className="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+>
+<LogOut size={20} />
+Sair
+</button>
+</div>
 </div>
 </div>
 
