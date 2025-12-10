@@ -1,432 +1,876 @@
-<!DOCTYPE html>
+import React, { useState } from ‘react’;
+import { Calendar, Users, Clock, CheckCircle, XCircle, Search, Filter, Edit, Trash2, Plus, Settings, Ban, DollarSign, CreditCard, Wallet } from ‘lucide-react’;
 
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Matheus Barber Shop</title>
-    <link rel="icon" href="https://i.ibb.co/dwMYqmPk/IMG-2261.jpg">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #1a1a1a 0%, #000 100%); color: #fff; min-height: 100vh; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-        .header { background: rgba(0,0,0,0.5); padding: 20px; text-align: center; border-bottom: 2px solid #d4af37; margin-bottom: 30px; }
-        .header-logo { max-width: 200px; height: auto; margin-bottom: 10px; }
-        .admin-login { max-width: 400px; margin: 100px auto; background: #2a2a2a; padding: 40px; border-radius: 15px; border: 2px solid #d4af37; }
-        .welcome { text-align: center; margin-bottom: 30px; }
-        .welcome img { max-width: 180px; margin-bottom: 20px; }
-        .welcome h2 { font-size: 32px; margin-bottom: 10px; }
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; margin-bottom: 8px; font-weight: bold; }
-        .form-input { width: 100%; padding: 15px; background: #1a1a1a; border: 2px solid #333; border-radius: 10px; color: #fff; font-size: 16px; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
-        .btn-primary { background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%); color: #000; }
-        .back-btn { padding: 12px; background: #2a2a2a; color: #fff; border: none; border-radius: 8px; cursor: pointer; }
-        .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 10px; }
-        .logout-btn { background: #dc3545; color: #fff; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 30px; }
-        .stat-card { background: #2a2a2a; padding: 20px; border-radius: 10px; text-align: center; border: 2px solid #333; }
-        .stat-number { font-size: 28px; font-weight: bold; color: #d4af37; margin-bottom: 5px; }
-        .stat-label { color: #888; font-size: 13px; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; }
-        .tab-btn { flex: 1; min-width: 70px; padding: 12px 6px; background: #2a2a2a; border: 2px solid #333; border-radius: 8px; cursor: pointer; font-weight: bold; color: #fff; font-size: 11px; }
-        .tab-btn.active { background: #d4af37; color: #000; }
-        .booking-card, .client-card { background: #2a2a2a; padding: 20px; border-radius: 10px; margin-bottom: 15px; border: 2px solid #333; }
-        .action-btn { padding: 10px 8px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 11px; margin: 5px; min-width: 70px; }
-        .btn-confirm { background: #007bff; color: #fff; }
-        .btn-complete { background: #28a745; color: #fff; }
-        .btn-cancel { background: #dc3545; color: #fff; }
-        .btn-block { background: #e74c3c; color: #fff; }
-        .btn-unblock { background: #2ecc71; color: #fff; }
-        .btn-paid { background: #2ecc71; color: #fff; }
-        .status-badge { padding: 5px 10px; border-radius: 5px; font-size: 11px; font-weight: bold; margin: 5px 5px 0 0; display: inline-block; }
-        .status-pending { background: #ffc107; color: #000; }
-        .status-confirmed { background: #007bff; color: #fff; }
-        .status-completed { background: #28a745; color: #fff; }
-        .status-cancelled { background: #dc3545; color: #fff; }
-        .status-paid { background: #2ecc71; color: #fff; }
-        .status-unpaid { background: #e67e22; color: #fff; }
-        .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 15px; background: #2a2a2a; border-radius: 10px; }
-        .calendar-nav-btn { padding: 10px 15px; background: #d4af37; color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; }
-        .calendar-title { font-size: 18px; font-weight: bold; color: #d4af37; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 20px; }
-        .calendar-day-header { text-align: center; padding: 10px; background: #2a2a2a; border-radius: 5px; font-size: 11px; font-weight: bold; color: #d4af37; }
-        .calendar-day { background: #2a2a2a; border: 2px solid #333; border-radius: 10px; padding: 8px; min-height: 100px; cursor: pointer; }
-        .calendar-day:hover { border-color: #d4af37; }
-        .calendar-day.today { border-color: #d4af37; background: #333; }
-        .calendar-day.other-month { opacity: 0.3; }
-        .calendar-day-number { font-weight: bold; font-size: 14px; margin-bottom: 5px; }
-        .calendar-booking { background: #007bff; padding: 2px 4px; border-radius: 4px; font-size: 9px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .calendar-booking.completed { background: #28a745; }
-        .calendar-booking.cancelled { background: #dc3545; }
-        .calendar-booking.blocked { background: #e74c3c; }
-        .calendar-booking.unpaid { background: #e67e22; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 1000; overflow-y: auto; }
-        .modal.active { display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .modal-content { background: #1a1a1a; padding: 25px; border-radius: 15px; max-width: 500px; width: 100%; border: 2px solid #d4af37; margin: 20px; max-height: 85vh; overflow-y: auto; }
-        .modal-title { font-size: 20px; margin-bottom: 20px; color: #d4af37; }
-        .modal-close { float: right; font-size: 28px; cursor: pointer; color: #888; line-height: 20px; }
-        .modal-close:hover { color: #fff; }
-        .settings-section { margin-bottom: 25px; }
-        .settings-title { font-size: 16px; color: #d4af37; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <img src="https://i.ibb.co/dwMYqmPk/IMG-2261.jpg" class="header-logo">
-        <p style="color:#888;font-size:14px;">Painel Administrativo</p>
+const AdminPanel = () => {
+const [activeTab, setActiveTab] = useState(‘agendamentos’);
+const [agendamentos, setAgendamentos] = useState([
+{
+id: 1,
+cliente: ‘João Silva’,
+clienteId: 1,
+servico: ‘Corte de Cabelo’,
+data: ‘2024-12-10’,
+hora: ‘14:00’,
+status: ‘confirmado’,
+valor: 50.00,
+telefone: ‘(11) 98765-4321’,
+metodoPagamento: ‘pix’,
+pagamentoStatus: ‘pago’
+},
+{
+id: 2,
+cliente: ‘Maria Santos’,
+clienteId: 2,
+servico: ‘Manicure’,
+data: ‘2024-12-10’,
+hora: ‘15:30’,
+status: ‘pendente’,
+valor: 35.00,
+telefone: ‘(11) 91234-5678’,
+metodoPagamento: ‘credito’,
+pagamentoStatus: ‘pendente’
+},
+{
+id: 3,
+cliente: ‘Pedro Costa’,
+clienteId: 3,
+servico: ‘Barba’,
+data: ‘2024-12-11’,
+hora: ‘10:00’,
+status: ‘confirmado’,
+valor: 30.00,
+telefone: ‘(11) 99876-5432’,
+metodoPagamento: ‘dinheiro’,
+pagamentoStatus: ‘pago’
+},
+{
+id: 4,
+cliente: ‘Ana Silva’,
+clienteId: 4,
+servico: ‘Corte + Barba’,
+data: ‘2024-12-12’,
+hora: ‘16:00’,
+status: ‘confirmado’,
+valor: 80.00,
+telefone: ‘(11) 97777-8888’,
+metodoPagamento: ‘debito’,
+pagamentoStatus: ‘pago’
+}
+]);
+
+const [clientesBloqueados, setClientesBloqueados] = useState([
+{
+id: 1,
+nome: ‘Carlos Souza’,
+telefone: ‘(11) 95555-4444’,
+motivo: ‘Não compareceu 3 vezes’,
+dataBloqueio: ‘2024-12-01’
+}
+]);
+
+const [servicos, setServicos] = useState([
+{ id: 1, nome: ‘Corte de Cabelo’, duracao: 30, valor: 50.00, ativo: true },
+{ id: 2, nome: ‘Barba’, duracao: 20, valor: 30.00, ativo: true },
+{ id: 3, nome: ‘Manicure’, duracao: 45, valor: 35.00, ativo: true },
+{ id: 4, nome: ‘Pedicure’, duracao: 60, valor: 40.00, ativo: true },
+{ id: 5, nome: ‘Corte + Barba’, duracao: 50, valor: 80.00, ativo: true }
+]);
+
+const [horarios, setHorarios] = useState({
+segunda: { inicio: ‘09:00’, fim: ‘18:00’, ativo: true },
+terca: { inicio: ‘09:00’, fim: ‘18:00’, ativo: true },
+quarta: { inicio: ‘09:00’, fim: ‘18:00’, ativo: true },
+quinta: { inicio: ‘09:00’, fim: ‘18:00’, ativo: true },
+sexta: { inicio: ‘09:00’, fim: ‘18:00’, ativo: true },
+sabado: { inicio: ‘09:00’, fim: ‘14:00’, ativo: true },
+domingo: { inicio: ‘00:00’, fim: ‘00:00’, ativo: false }
+});
+
+const [filtro, setFiltro] = useState(‘todos’);
+const [busca, setBusca] = useState(’’);
+const [modalServico, setModalServico] = useState(false);
+const [modalBloquear, setModalBloquear] = useState(false);
+const [clienteParaBloquear, setClienteParaBloquear] = useState(null);
+const [motivoBloqueio, setMotivoBloqueio] = useState(’’);
+const [novoServico, setNovoServico] = useState({ nome: ‘’, duracao: ‘’, valor: ‘’ });
+const [dataSelecionada, setDataSelecionada] = useState(new Date().toISOString().split(‘T’)[0]);
+const [mesSelecionado, setMesSelecionado] = useState(new Date());
+
+const statusColors = {
+pendente: ‘bg-yellow-100 text-yellow-800 border-yellow-300’,
+confirmado: ‘bg-green-100 text-green-800 border-green-300’,
+cancelado: ‘bg-red-100 text-red-800 border-red-300’,
+concluido: ‘bg-blue-100 text-blue-800 border-blue-300’
+};
+
+const pagamentoColors = {
+pago: ‘bg-green-100 text-green-800’,
+pendente: ‘bg-yellow-100 text-yellow-800’,
+cancelado: ‘bg-red-100 text-red-800’
+};
+
+const metodosPagamento = {
+pix: { nome: ‘PIX’, icon: ‘📱’ },
+credito: { nome: ‘Cartão Crédito’, icon: ‘💳’ },
+debito: { nome: ‘Cartão Débito’, icon: ‘💳’ },
+dinheiro: { nome: ‘Dinheiro’, icon: ‘💵’ }
+};
+
+const agendamentosFiltrados = agendamentos.filter(ag => {
+const matchFiltro = filtro === ‘todos’ || ag.status === filtro;
+const matchBusca = ag.cliente.toLowerCase().includes(busca.toLowerCase()) ||
+ag.servico.toLowerCase().includes(busca.toLowerCase());
+return matchFiltro && matchBusca;
+});
+
+const stats = {
+total: agendamentos.length,
+confirmados: agendamentos.filter(a => a.status === ‘confirmado’).length,
+pendentes: agendamentos.filter(a => a.status === ‘pendente’).length,
+receita: agendamentos.filter(a => a.pagamentoStatus === ‘pago’).reduce((sum, a) => sum + a.valor, 0),
+bloqueados: clientesBloqueados.length
+};
+
+const alterarStatus = (id, novoStatus) => {
+setAgendamentos(agendamentos.map(ag =>
+ag.id === id ? { …ag, status: novoStatus } : ag
+));
+};
+
+const alterarPagamento = (id, novoStatus) => {
+setAgendamentos(agendamentos.map(ag =>
+ag.id === id ? { …ag, pagamentoStatus: novoStatus } : ag
+));
+};
+
+const excluirAgendamento = (id) => {
+if (window.confirm(‘Deseja realmente excluir este agendamento?’)) {
+setAgendamentos(agendamentos.filter(ag => ag.id !== id));
+}
+};
+
+const abrirModalBloquear = (agendamento) => {
+setClienteParaBloquear(agendamento);
+setModalBloquear(true);
+};
+
+const bloquearCliente = () => {
+if (clienteParaBloquear && motivoBloqueio.trim()) {
+const novoClienteBloqueado = {
+id: clientesBloqueados.length + 1,
+nome: clienteParaBloquear.cliente,
+telefone: clienteParaBloquear.telefone,
+motivo: motivoBloqueio,
+dataBloqueio: new Date().toISOString().split(‘T’)[0]
+};
+setClientesBloqueados([…clientesBloqueados, novoClienteBloqueado]);
+setModalBloquear(false);
+setClienteParaBloquear(null);
+setMotivoBloqueio(’’);
+alert(‘Cliente bloqueado com sucesso!’);
+}
+};
+
+const desbloquearCliente = (id) => {
+if (window.confirm(‘Deseja desbloquear este cliente?’)) {
+setClientesBloqueados(clientesBloqueados.filter(c => c.id !== id));
+}
+};
+
+const adicionarServico = () => {
+if (novoServico.nome && novoServico.duracao && novoServico.valor) {
+setServicos([…servicos, {
+id: servicos.length + 1,
+nome: novoServico.nome,
+duracao: parseInt(novoServico.duracao),
+valor: parseFloat(novoServico.valor),
+ativo: true
+}]);
+setNovoServico({ nome: ‘’, duracao: ‘’, valor: ‘’ });
+setModalServico(false);
+}
+};
+
+const toggleServicoAtivo = (id) => {
+setServicos(servicos.map(s =>
+s.id === id ? { …s, ativo: !s.ativo } : s
+));
+};
+
+const excluirServico = (id) => {
+if (window.confirm(‘Deseja realmente excluir este serviço?’)) {
+setServicos(servicos.filter(s => s.id !== id));
+}
+};
+
+const getDiasDoMes = (data) => {
+const ano = data.getFullYear();
+const mes = data.getMonth();
+const primeiroDia = new Date(ano, mes, 1);
+const ultimoDia = new Date(ano, mes + 1, 0);
+const diasDoMes = [];
+
+```
+for (let i = 0; i < primeiroDia.getDay(); i++) {
+  diasDoMes.push(null);
+}
+
+for (let dia = 1; dia <= ultimoDia.getDate(); dia++) {
+  diasDoMes.push(new Date(ano, mes, dia));
+}
+
+return diasDoMes;
+```
+
+};
+
+const getAgendamentosData = (data) => {
+if (!data) return [];
+const dataStr = data.toISOString().split(‘T’)[0];
+return agendamentos.filter(ag => ag.data === dataStr);
+};
+
+const mesAnterior = () => {
+setMesSelecionado(new Date(mesSelecionado.getFullYear(), mesSelecionado.getMonth() - 1));
+};
+
+const proximoMes = () => {
+setMesSelecionado(new Date(mesSelecionado.getFullYear(), mesSelecionado.getMonth() + 1));
+};
+
+const agendamentosDataSelecionada = agendamentos.filter(ag => ag.data === dataSelecionada);
+
+return (
+<div className="min-h-screen bg-gray-50">
+<div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white p-6 shadow-lg">
+<div className="max-w-7xl mx-auto">
+<h1 className="text-3xl font-bold mb-2">Painel Administrativo</h1>
+<p className="text-blue-100">Gerencie seus agendamentos e configurações</p>
+</div>
+</div>
+
+```
+  <div className="max-w-7xl mx-auto px-4 -mt-6 mb-8">
+    <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div className="bg-white rounded-lg shadow p-6 border-l-4 border-blue-500">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-500 text-sm">Total Agendamentos</p>
+            <p className="text-2xl font-bold text-gray-800">{stats.total}</p>
+          </div>
+          <Calendar className="text-blue-500" size={32} />
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow p-6 border-l-4 border-green-500">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-500 text-sm">Confirmados</p>
+            <p className="text-2xl font-bold text-gray-800">{stats.confirmados}</p>
+          </div>
+          <CheckCircle className="text-green-500" size={32} />
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow p-6 border-l-4 border-yellow-500">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-500 text-sm">Pendentes</p>
+            <p className="text-2xl font-bold text-gray-800">{stats.pendentes}</p>
+          </div>
+          <Clock className="text-yellow-500" size={32} />
+        </div>
+      </div>
+      
+      <div className="bg-white rounded-lg shadow p-6 border-l-4 border-purple-500">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-500 text-sm">Receita</p>
+            <p className="text-2xl font-bold text-gray-800">R$ {stats.receita.toFixed(2)}</p>
+          </div>
+          <DollarSign className="text-purple-500" size={32} />
+        </div>
+      </div>
+
+      <div className="bg-white rounded-lg shadow p-6 border-l-4 border-red-500">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-gray-500 text-sm">Bloqueados</p>
+            <p className="text-2xl font-bold text-gray-800">{stats.bloqueados}</p>
+          </div>
+          <Ban className="text-red-500" size={32} />
+        </div>
+      </div>
     </div>
-    <div class="container" id="main-container"></div>
-    <div id="modal" class="modal"></div>
+  </div>
 
+  <div className="max-w-7xl mx-auto px-4 mb-6">
+    <div className="bg-white rounded-lg shadow">
+      <div className="flex overflow-x-auto border-b">
+        <button
+          onClick={() => setActiveTab('agendamentos')}
+          className={`px-6 py-3 font-medium transition-colors whitespace-nowrap ${
+            activeTab === 'agendamentos'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          <Calendar className="inline mr-2" size={20} />
+          Agendamentos
+        </button>
+        <button
+          onClick={() => setActiveTab('calendario')}
+          className={`px-6 py-3 font-medium transition-colors whitespace-nowrap ${
+            activeTab === 'calendario'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          <Calendar className="inline mr-2" size={20} />
+          Calendário
+        </button>
+        <button
+          onClick={() => setActiveTab('bloqueados')}
+          className={`px-6 py-3 font-medium transition-colors whitespace-nowrap ${
+            activeTab === 'bloqueados'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          <Ban className="inline mr-2" size={20} />
+          Bloqueados
+        </button>
+        <button
+          onClick={() => setActiveTab('servicos')}
+          className={`px-6 py-3 font-medium transition-colors whitespace-nowrap ${
+            activeTab === 'servicos'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          <Settings className="inline mr-2" size={20} />
+          Serviços
+        </button>
+        <button
+          onClick={() => setActiveTab('horarios')}
+          className={`px-6 py-3 font-medium transition-colors whitespace-nowrap ${
+            activeTab === 'horarios'
+              ? 'text-blue-600 border-b-2 border-blue-600'
+              : 'text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          <Clock className="inline mr-2" size={20} />
+          Horários
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div className="max-w-7xl mx-auto px-4 pb-8">
+    {activeTab === 'agendamentos' && (
+      <div className="bg-white rounded-lg shadow">
+        <div className="p-6 border-b">
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1">
+              <div className="relative">
+                <Search className="absolute left-3 top-3 text-gray-400" size={20} />
+                <input
+                  type="text"
+                  placeholder="Buscar por cliente ou serviço..."
+                  value={busca}
+                  onChange={(e) => setBusca(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <select
+                value={filtro}
+                onChange={(e) => setFiltro(e.target.value)}
+                className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="todos">Todos</option>
+                <option value="pendente">Pendentes</option>
+                <option value="confirmado">Confirmados</option>
+                <option value="cancelado">Cancelados</option>
+                <option value="concluido">Concluídos</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Serviço</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data/Hora</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telefone</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Pagamento</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {agendamentosFiltrados.map((ag) => (
+                <tr key={ag.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="font-medium text-gray-900">{ag.cliente}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">{ag.servico}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                    {new Date(ag.data + 'T00:00:00').toLocaleDateString('pt-BR')} às {ag.hora}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">{ag.telefone}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                    R$ {ag.valor.toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="space-y-1">
+                      <div className="text-xs text-gray-500">
+                        {metodosPagamento[ag.metodoPagamento]?.icon} {metodosPagamento[ag.metodoPagamento]?.nome}
+                      </div>
+                      <select
+                        value={ag.pagamentoStatus}
+                        onChange={(e) => alterarPagamento(ag.id, e.target.value)}
+                        className={`px-2 py-1 rounded text-xs font-medium ${pagamentoColors[ag.pagamentoStatus]}`}
+                      >
+                        <option value="pendente">Pendente</option>
+                        <option value="pago">Pago</option>
+                        <option value="cancelado">Cancelado</option>
+                      </select>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <select
+                      value={ag.status}
+                      onChange={(e) => alterarStatus(ag.id, e.target.value)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium border ${statusColors[ag.status]}`}
+                    >
+                      <option value="pendente">Pendente</option>
+                      <option value="confirmado">Confirmado</option>
+                      <option value="cancelado">Cancelado</option>
+                      <option value="concluido">Concluído</option>
+                    </select>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => abrirModalBloquear(ag)}
+                        className="text-orange-600 hover:text-orange-800"
+                        title="Bloquear cliente"
+                      >
+                        <Ban size={18} />
+                      </button>
+                      <button
+                        onClick={() => excluirAgendamento(ag.id)}
+                        className="text-red-600 hover:text-red-800"
+                        title="Excluir agendamento"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+
+    {activeTab === 'calendario' && (
+      <div className="space-y-6">
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-800 capitalize">
+              {mesSelecionado.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+            </h2>
+            <div className="flex gap-2">
+              <button
+                onClick={mesAnterior}
+                className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
+              >
+                ← Anterior
+              </button>
+              <button
+                onClick={proximoMes}
+                className="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200"
+              >
+                Próximo →
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-7 gap-2">
+            {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'].map(dia => (
+              <div key={dia} className="text-center font-medium text-gray-600 py-2">
+                {dia}
+              </div>
+            ))}
+            {getDiasDoMes(mesSelecionado).map((data, idx) => {
+              const agendamentosNoDia = data ? getAgendamentosData(data) : [];
+              const isHoje = data && data.toISOString().split('T')[0] === new Date().toISOString().split('T')[0];
+              const isSelecionado = data && data.toISOString().split('T')[0] === dataSelecionada;
+              
+              return (
+                <div
+                  key={idx}
+                  onClick={() => data && setDataSelecionada(data.toISOString().split('T')[0])}
+                  className={`min-h-24 p-2 border rounded-lg cursor-pointer transition-all ${
+                    !data ? 'bg-gray-50' : 
+                    isSelecionado ? 'bg-blue-100 border-blue-500' :
+                    isHoje ? 'bg-green-50 border-green-300' :
+                    'bg-white hover:bg-gray-50'
+                  }`}
+                >
+                  {data && (
+                    <>
+                      <div className={`text-sm font-medium mb-1 ${isHoje ? 'text-green-600' : 'text-gray-700'}`}>
+                        {data.getDate()}
+                      </div>
+                      {agendamentosNoDia.length > 0 && (
+                        <div className="space-y-1">
+                          {agendamentosNoDia.slice(0, 2).map(ag => (
+                            <div key={ag.id} className="text-xs bg-blue-500 text-white px-1 py-0.5 rounded truncate">
+                              {ag.hora} {ag.cliente}
+                            </div>
+                          ))}
+                          {agendamentosNoDia.length > 2 && (
+                            <div className="text-xs text-blue-600 font-medium">
+                              +{agendamentosNoDia.length - 2} mais
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6">
+          <h3 className="text-lg font-bold text-gray-800 mb-4">
+            Agendamentos - {new Date(dataSelecionada + 'T00:00:00').toLocaleDateString('pt-BR')}
+          </h3>
+          {agendamentosDataSelecionada.length > 0 ? (
+            <div className="space-y-3">
+              {agendamentosDataSelecionada.map(ag => (
+                <div key={ag.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3">
+                      <div className="font-medium text-gray-900">{ag.hora}</div>
+                      <div className="text-gray-600">{ag.cliente}</div>
+                      <span className={`px-2 py-1 rounded-full text-xs ${statusColors[ag.status]}`}>
+                        {ag.status}
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-500 mt-1">
+                      {ag.servico} • R$ {ag.valor.toFixed(2)} • {metodosPagamento[ag.metodoPagamento]?.nome}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => abrirModalBloquear(ag)}
+                      className="text-orange-600 hover:text-orange-800 p-2"
+                    >
+                      <Ban size={18} />
+                    </button>
+                    <button
+                      onClick={() => excluirAgendamento(ag.id)}
+                      className="text-red-600 hover:text-red-800 p-2"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-gray-500 text-center py-8">Nenhum agendamento para esta data</p>
+          )}
+        </div>
+      </div>
+    )}
+
+    {activeTab === 'bloqueados' && (
+      <div className="bg-white rounded-lg shadow">
+        <div className="p-6 border-b">
+          <h2 className="text-xl font-bold text-gray-800">Clientes Bloqueados</h2>
+          <p className="text-sm text-gray-600 mt-1">Clientes que não podem fazer novos agendamentos</p>
+        </div>
+        <div className="overflow-x-auto">
+          {clientesBloqueados.length > 0 ? (
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Telefone</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Motivo</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Data Bloqueio</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {clientesBloqueados.map((cliente) => (
+                  <tr key={cliente.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="font-medium text-gray-900">{cliente.nome}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">{cliente.telefone}</td>
+                    <td className="px-6 py-4 text-gray-600">{cliente.motivo}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                      {new Date(cliente.dataBloqueio + 'T00:00:00').toLocaleDateString('pt-BR')}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        onClick={() => desbloquearCliente(cliente.id)}
+                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 text-sm"
+                      >
+                        Desbloquear
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <div className="p-8 text-center text-gray-500">
+              <Ban size={48} className="mx-auto mb-4 text-gray-300" />
+              <p>Nenhum cliente bloqueado</p>
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+
+    {activeTab === 'servicos' && (
+      <div className="bg-white rounded-lg shadow">
+        <div className="p-6 border-b flex justify-between items-center">
+          <h2 className="text-xl font-bold text-gray-800">Gerenciar Serviços</h2>
+          <button
+            onClick={() => setModalServico(true)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          >
+            <Plus size={20} />
+            Novo Serviço
+          </button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Serviço</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Duração</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Valor</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ações</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {servicos.map((servico) => (
+                <tr key={servico.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                    {servico.nome}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                    {servico.duracao} min
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                    R$ {servico.valor.toFixed(2)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <button
+                      onClick={() => toggleServicoAtivo(servico.id)}
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        servico.ativo
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-gray-100 text-gray-800'
+                      }`}
+                    >
+                      {servico.ativo ? 'Ativo' : 'Inativo'}
+                    </button>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap flex gap-2">
+                    <button
+                      onClick={() => excluirServico(servico.id)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )}
+
+    {activeTab === 'horarios' && (
+      <div className="bg-white rounded-lg shadow">
+        <div className="p-6 border-b">
+          <h2 className="text-xl font-bold text-gray-800">Horários de Funcionamento</h2>
+        </div>
+        <div className="p-6">
+          <div className="space-y-4">
+            {Object.entries(horarios).map(([dia, config]) => (
+              <div key={dia} className="flex items-center gap-4 p-4 border rounded-lg">
+                <div className="w-32">
+                  <label className="font-medium text-gray-700 capitalize">{dia}</label>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={config.ativo}
+                  onChange={(e) => setHorarios({
+                    ...horarios,
+                    [dia]: { ...config, ativo: e.target.checked }
+                  })}
+                  className="w-5 h-5"
+                />
+                <input
+                  type="time"
+                  value={config.inicio}
+                  disabled={!config.ativo}
+                  onChange={(e) => setHorarios({
+                    ...horarios,
+                    [dia]: { ...config, inicio: e.target.value }
+                  })}
+                  className="px-3 py-2 border rounded-lg disabled:bg-gray-100"
+                />
+                <span>até</span>
+                <input
+                  type="time"
+                  value={config.fim}
+                  disabled={!config.ativo}
+                  onChange={(e) => setHorarios({
+                    ...horarios,
+                    [dia]: { ...config, fim: e.target.value }
+                  })}
+                  className="px-3 py-2 border rounded-lg disabled:bg-gray-100"
+                />
+              </div>
+            ))}
+          </div>
+          <button className="mt-6 bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            Salvar Horários
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+
+  {modalServico && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg max-w-md w-full p-6">
+        <h3 className="text-xl font-bold mb-4">Novo Serviço</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+            <input
+              type="text"
+              value={novoServico.nome}
+              onChange={(e) => setNovoServico({...novoServico, nome: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Duração (min)</label>
+            <input
+              type="number"
+              value={novoServico.duracao}
+              onChange={(e) => setNovoServico({...novoServico, duracao: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Valor (R$)</label>
+            <input
+              type="number"
+              step="0.01"
+              value={novoServico.valor}
+              onChange={(e) => setNovoServico({...novoServico, valor: e.target.value})}
+              className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+        </div>
+        <div className="flex gap-3 mt-6">
+          <button
+            onClick={adicionarServico}
+            className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+          >
+            Adicionar
+          </button>
+          <button
+            onClick={() => setModalServico(false)}
+            className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+
+  {modalBloquear && (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg max-w-md w-full p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="bg-red-100 p-3 rounded-full">
+            <Ban className="text-red-600" size={24} />
+          </div>
+          <h3 className="text-xl font-bold">Bloquear Cliente</h3>
+        </div>
+        
+        {clienteParaBloquear && (
+          <div className="bg-gray-50 p-4 rounded-lg mb-4">
+            <p className="text-sm text-gray-600">Cliente:</p>
+            <p className="font-medium text-gray-900">{clienteParaBloquear.cliente}</p>
+            <p className="text-sm text-gray-600 mt-1">{clienteParaBloquear.telefone}</p>
+          </div>
+        )}
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Motivo do bloqueio *
+          </label>
+          <textarea
+            value={motivoBloqueio}
+            onChange={(e) => setMotivoBloqueio(e.target.value)}
+            placeholder="Ex: Não compareceu 3 vezes sem avisar"
+            className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-red-500 h-24 resize-none"
+          />
+        </div>
+
+        <div className="flex gap-3 mt-6">
+          <button
+            onClick={bloquearCliente}
+            className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 font-medium"
+          >
+            Bloquear Cliente
+          </button>
+          <button
+            onClick={() => {
+              setModalBloquear(false);
+              setClienteParaBloquear(null);
+              setMotivoBloqueio('');
+            }}
+            className="flex-1 bg-gray-200 text-gray-800 py-2 rounded-lg hover:bg-gray-300"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+</div>
 ```
-<script>
-    const ADMIN_PASSWORD = 'matheus123';
-    let isAdminLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
-    let currentTab = 'calendar';
-    let currentCalendarDate = new Date();
 
-    function getBookings() { return JSON.parse(localStorage.getItem('bookings') || '[]'); }
-    function saveBookings(b) { localStorage.setItem('bookings', JSON.stringify(b)); }
-    function getBlockedTimes() { return JSON.parse(localStorage.getItem('blockedTimes') || '[]'); }
-    function saveBlockedTimes(times) { localStorage.setItem('blockedTimes', JSON.stringify(times)); }
-    function getBlockedClients() { return JSON.parse(localStorage.getItem('blockedClients') || '[]'); }
-    function saveBlockedClients(clients) { localStorage.setItem('blockedClients', JSON.stringify(clients)); }
-    
-    function updateBooking(id, u) { 
-        const b = getBookings(); 
-        const i = b.findIndex(x => x.id === id); 
-        if (i !== -1) { 
-            b[i] = {...b[i], ...u}; 
-            saveBookings(b); 
-        }
-    }
-    
-    function deleteBooking(id) { saveBookings(getBookings().filter(b => b.id !== id)); }
+);
+};
 
-    function blockTimeSlot(date, time) {
-        const blocked = getBlockedTimes();
-        const dateStr = date.split('T')[0];
-        const blockId = `${dateStr}_${time}`;
-        if (!blocked.find(b => b.id === blockId)) {
-            blocked.push({ id: blockId, date: dateStr, time: time });
-            saveBlockedTimes(blocked);
-        }
-    }
-
-    function unblockTimeSlot(blockId) {
-        saveBlockedTimes(getBlockedTimes().filter(b => b.id !== blockId));
-    }
-
-    function blockClient(phone, name) {
-        const blocked = getBlockedClients();
-        if (!blocked.find(c => c.phone === phone)) {
-            blocked.push({ phone, name, blockedAt: new Date().toISOString() });
-            saveBlockedClients(blocked);
-        }
-    }
-
-    function unblockClient(phone) {
-        saveBlockedClients(getBlockedClients().filter(c => c.phone !== phone));
-    }
-
-    function isClientBlocked(phone) {
-        return getBlockedClients().some(c => c.phone === phone);
-    }
-
-    function getAllClients() {
-        const bookings = getBookings();
-        const clientsMap = new Map();
-        bookings.forEach(booking => {
-            const phone = booking.customer.phone;
-            if (!clientsMap.has(phone)) {
-                clientsMap.set(phone, { 
-                    name: booking.customer.name, 
-                    phone: booking.customer.phone, 
-                    email: booking.customer.email || '', 
-                    totalBookings: 0, 
-                    totalSpent: 0, 
-                    lastVisit: booking.date,
-                    blocked: isClientBlocked(phone)
-                });
-            }
-            const client = clientsMap.get(phone);
-            client.totalBookings++;
-            if (booking.status === 'completed' && booking.paid) client.totalSpent += booking.service.price;
-            if (new Date(booking.date) > new Date(client.lastVisit)) client.lastVisit = booking.date;
-        });
-        return Array.from(clientsMap.values());
-    }
-
-    function loginAdmin() {
-        if (document.getElementById('admin-password').value === ADMIN_PASSWORD) {
-            isAdminLoggedIn = true;
-            localStorage.setItem('adminLoggedIn', 'true');
-            render();
-        } else alert('Senha incorreta!');
-    }
-
-    function logoutAdmin() {
-        isAdminLoggedIn = false;
-        localStorage.removeItem('adminLoggedIn');
-        render();
-    }
-
-    function renderAdminLogin() {
-        document.getElementById('main-container').innerHTML = `
-            <div class="admin-login">
-                <div class="welcome">
-                    <img src="https://i.ibb.co/dwMYqmPk/IMG-2261.jpg">
-                    <h2>Acesso Admin</h2>
-                    <p style="color:#888;">Digite a senha</p>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Senha</label>
-                    <input type="password" id="admin-password" class="form-input" onkeypress="if(event.key==='Enter') loginAdmin()">
-                </div>
-                <button class="btn btn-primary" onclick="loginAdmin()">Entrar</button>
-                <button class="btn back-btn" onclick="window.history.back()" style="width:100%;">← Voltar</button>
-            </div>`;
-    }
-
-    function showTab(tab) { currentTab = tab; renderAdminPanel(); }
-
-    function renderAdminPanel() {
-        const bookings = getBookings();
-        const clients = getAllClients();
-        const today = new Date().toDateString();
-        const todayB = bookings.filter(b => new Date(b.date).toDateString() === today);
-        const completed = bookings.filter(b => b.status === 'completed').length;
-        const paidBookings = bookings.filter(b => b.paid);
-        const revenue = paidBookings.reduce((sum, b) => sum + b.service.price, 0);
-        const blockedCount = getBlockedClients().length;
-
-        document.getElementById('main-container').innerHTML = `
-            <div class="admin-header"><h2>Painel Admin</h2><button class="logout-btn" onclick="logoutAdmin()">Sair</button></div>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-number">${bookings.length}</div><div class="stat-label">Total</div></div>
-                <div class="stat-card"><div class="stat-number">${todayB.length}</div><div class="stat-label">Hoje</div></div>
-                <div class="stat-card"><div class="stat-number">${completed}</div><div class="stat-label">Atendidos</div></div>
-                <div class="stat-card"><div class="stat-number">${paidBookings.length}</div><div class="stat-label">Pagos</div></div>
-                <div class="stat-card"><div class="stat-number">R$ ${revenue}</div><div class="stat-label">Recebido</div></div>
-                <div class="stat-card"><div class="stat-number">${blockedCount}</div><div class="stat-label">Bloqueados</div></div>
-            </div>
-            <div class="tabs">
-                <button class="tab-btn ${currentTab === 'calendar' ? 'active' : ''}" onclick="showTab('calendar')">📅 Calendário</button>
-                <button class="tab-btn ${currentTab === 'bookings' ? 'active' : ''}" onclick="showTab('bookings')">📋 Lista</button>
-                <button class="tab-btn ${currentTab === 'clients' ? 'active' : ''}" onclick="showTab('clients')">👥 Clientes</button>
-                <button class="tab-btn ${currentTab === 'blocked' ? 'active' : ''}" onclick="showTab('blocked')">🚫 Bloqueados</button>
-            </div>
-            <div id="admin-content"></div>`;
-
-        if (currentTab === 'calendar') renderCalendar();
-        else if (currentTab === 'bookings') renderBookingsList();
-        else if (currentTab === 'clients') renderClientsList();
-        else renderBlockedList();
-    }
-
-    function renderCalendar() {
-        const year = currentCalendarDate.getFullYear();
-        const month = currentCalendarDate.getMonth();
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const today = new Date();
-        
-        const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-        const dayNames = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
-
-        let html = `
-            <div class="calendar-header">
-                <button class="calendar-nav-btn" onclick="previousMonth()">◀ Ant</button>
-                <div class="calendar-title">${monthNames[month]} ${year}</div>
-                <button class="calendar-nav-btn" onclick="nextMonth()">Prox ▶</button>
-            </div>
-            <div class="calendar-grid">`;
-
-        dayNames.forEach(day => html += `<div class="calendar-day-header">${day}</div>`);
-
-        const startDay = firstDay.getDay();
-        for (let i = 0; i < startDay; i++) {
-            const prevDay = new Date(year, month, 0 - (startDay - i - 1));
-            html += `<div class="calendar-day other-month"><div class="calendar-day-number">${prevDay.getDate()}</div></div>`;
-        }
-
-        for (let day = 1; day <= lastDay.getDate(); day++) {
-            const currentDate = new Date(year, month, day);
-            const dateStr = currentDate.toISOString().split('T')[0];
-            const isToday = currentDate.toDateString() === today.toDateString();
-            
-            const dayBookings = getBookings().filter(b => b.date.split('T')[0] === dateStr);
-            const blockedTimes = getBlockedTimes().filter(b => b.date === dateStr);
-            
-            html += `<div class="calendar-day ${isToday ? 'today' : ''}" onclick="showDayDetails('${dateStr}')">
-                <div class="calendar-day-number">${day}</div>`;
-            
-            dayBookings.slice(0, 2).forEach(b => {
-                const statusClass = b.paid ? 'completed' : (b.paid === false ? 'unpaid' : b.status);
-                html += `<div class="calendar-booking ${statusClass}">${b.time} ${b.customer.name.split(' ')[0]}</div>`;
-            });
-            
-            if (dayBookings.length > 2) html += `<div style="font-size:9px;color:#888;">+${dayBookings.length - 2}</div>`;
-            if (blockedTimes.length > 0) html += `<div class="calendar-booking blocked">🚫 ${blockedTimes.length}</div>`;
-            
-            html += `</div>`;
-        }
-
-        const endDay = lastDay.getDay();
-        for (let i = endDay + 1; i < 7; i++) {
-            html += `<div class="calendar-day other-month"><div class="calendar-day-number">${i - endDay}</div></div>`;
-        }
-
-        html += `</div>`;
-        document.getElementById('admin-content').innerHTML = html;
-    }
-
-    function previousMonth() {
-        currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
-        renderCalendar();
-    }
-
-    function nextMonth() {
-        currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
-        renderCalendar();
-    }
-
-    function showDayDetails(dateStr) {
-        const date = new Date(dateStr + 'T12:00:00');
-        const bookings = getBookings().filter(b => b.date.split('T')[0] === dateStr);
-        const blockedTimes = getBlockedTimes().filter(b => b.date === dateStr);
-        const timeSlots = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30'];
-        
-        let html = `<div class="modal-content"><span class="modal-close" onclick="closeModal()">&times;</span><h2 class="modal-title">📅 ${date.toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' })}</h2>`;
-        
-        if (bookings.length > 0) {
-            html += `<div class="settings-section"><h3 class="settings-title">Agendamentos</h3>`;
-            bookings.forEach(b => {
-                html += `<div class="booking-card" style="padding:15px;margin-bottom:10px;">
-                    <div><strong>${b.time}</strong> - ${b.customer.name}</div>
-                    <div style="font-size:12px;color:#888;">${b.service.name} | R$ ${b.service.price}</div>
-                    <div style="font-size:12px;color:#25d366;">📱 ${b.customer.phone}</div>
-                    <span class="status-badge status-${b.status}">${{pending:'Pendente',confirmed:'Confirmado',completed:'Concluído',cancelled:'Cancelado'}[b.status]}</span>
-                    <span class="status-badge ${b.paid ? 'status-paid' : 'status-unpaid'}">${b.paid ? '✓ Pago' : '✗ Não Pago'}</span>
-                </div>`;
-            });
-            html += `</div>`;
-        }
-        
-        html += `<div class="settings-section"><h3 class="settings-title">🚫 Gerenciar Horários</h3>`;
-        timeSlots.forEach(time => {
-            const blockId = `${dateStr}_${time}`;
-            const isBlocked = blockedTimes.find(b => b.id === blockId);
-            const hasBooking = bookings.find(b => b.time === time);
-            
-            if (isBlocked) {
-                html += `<button class="btn btn-primary" style="margin-bottom:8px;background:#28a745;padding:10px;" onclick="unblockTime('${blockId}')">${time} ✓ Bloqueado</button>`;
-            } else if (hasBooking) {
-                html += `<button class="btn" style="margin-bottom:8px;background:#555;cursor:not-allowed;padding:10px;" disabled>${time} Ocupado</button>`;
-            } else {
-                html += `<button class="btn btn-cancel" style="margin-bottom:8px;padding:10px;" onclick="blockTime('${dateStr}', '${time}')">${time} Bloquear</button>`;
-            }
-        });
-        html += `</div></div>`;
-        
-        document.getElementById('modal').innerHTML = html;
-        document.getElementById('modal').classList.add('active');
-    }
-
-    function blockTime(date, time) {
-        blockTimeSlot(date, time);
-        closeModal();
-        render();
-        alert(`✅ ${time} bloqueado!`);
-    }
-
-    function unblockTime(blockId) {
-        unblockTimeSlot(blockId);
-        closeModal();
-        render();
-        alert('✅ Horário desbloqueado!');
-    }
-
-    function renderBlockedList() {
-        const blockedClients = getBlockedClients();
-        const blockedTimes = getBlockedTimes();
-        
-        let html = `<div class="settings-section"><h3 class="settings-title">🚫 Clientes Bloqueados (${blockedClients.length})</h3>`;
-        html += blockedClients.length === 0 ? '<p style="text-align:center;color:#888;padding:20px;">Nenhum cliente bloqueado</p>' : 
-            blockedClients.map(c => `
-                <div class="client-card" style="padding:15px;">
-                    <div><strong>👤 ${c.name}</strong></div>
-                    <div style="color:#25d366;font-size:14px;">📱 ${c.phone}</div>
-                    <div style="color:#888;font-size:12px;">Bloqueado: ${new Date(c.blockedAt).toLocaleDateString('pt-BR')}</div>
-                    <button class="btn btn-unblock" style="margin-top:10px;padding:10px;" onclick="unblockClientAction('${c.phone}')">Desbloquear</button>
-                </div>
-            `).join('');
-        
-        html += `</div><div class="settings-section"><h3 class="settings-title">🚫 Horários Bloqueados (${blockedTimes.length})</h3>`;
-        html += blockedTimes.length === 0 ? '<p style="text-align:center;color:#888;padding:20px;">Nenhum horário bloqueado</p>' : 
-            blockedTimes.sort((a,b) => new Date(a.date) - new Date(b.date)).map(t => `
-                <div class="booking-card" style="padding:15px;">
-                    <div><strong>📅 ${new Date(t.date + 'T12:00:00').toLocaleDateString('pt-BR')}</strong></div>
-                    <div style="color:#888;">🕐 ${t.time}</div>
-                    <button class="btn btn-unblock" style="margin-top:10px;padding:10px;" onclick="unblockTime('${t.id}')">Desbloquear</button>
-                </div>
-            `).join('');
-        html += `</div>`;
-        document.getElementById('admin-content').innerHTML = html;
-    }
-
-    function unblockClientAction(phone) {
-        if (confirm('Desbloquear este cliente?')) {
-            unblockClient(phone);
-            render();
-            alert('✅ Cliente desbloqueado!');
-        }
-    }
-
-    function renderBookingsList() {
-        const bookings = getBookings().sort((a, b) => new Date(b.date) - new Date(a.date));
-        let html = bookings.length === 0 ? '<p style="text-align:center;color:#888;padding:40px">Nenhum agendamento</p>' : bookings.map(b => `
-            <div class="booking-card">
-                <div><strong>${b.customer.name}</strong></div>
-                <div style="color:#25d366;font-size:14px;">📱 ${b.customer.phone}</div>
-                ${b.customer.email ? `<div style="color:#888;font-size:14px;">📧 ${b.customer.email}</div>` : ''}
-                <div style="margin-top:8px;">
-                    <span class="status-badge status-${b.status}">${{pending:'Pendente',confirmed:'Confirmado',completed:'Concluído',cancelled:'Cancelado'}[b.status]}</span>
-                    <span class="status-badge ${b.paid ? 'status-paid' : 'status-unpaid'}">${b.paid ? '✓ Pago' : '✗ Não Pago'}</span>
-                </div>
-                <div style="margin-top:10px;">
-                    <div>💈 ${b.service.name} | 💰 R$ ${b.service.price}</div>
-                    <div style="color:#888;font-size:14px;margin-top:5px;">📅 ${new Date(b.date).toLocaleDateString('pt-BR')} | 🕐 ${b.time}</div>
-                </div>
-                <div style="display:flex;gap:8px;margin-top:15px;flex-wrap:wrap;">
-                    ${!b.paid ? `<button class="action-btn btn-paid" onclick="markAsPaid('${b.id}')">💰 Pago</button>` : ''}
-                    <button class="action-btn btn-confirm" onclick="updateBooking('${b.id}', {status:'confirmed'}); render()">Confirmar</button>
-                    <button class="action-btn btn-complete" onclick="updateBooking('${b.id}', {status:'completed'}); render()">Concluído</button>
-                    <button class="action-btn btn-cancel" onclick="if(confirm('Cancelar?')) { deleteBooking('${b.id}'); render(); }">Cancelar</button>
-                    <button class="action-btn btn-block" onclick="blockClientAction('${b.customer.phone}', '${b.customer.name}')">Bloquear</button>
-                </div>
-            </div>`).join('');
-        document.getElementById('admin-content').innerHTML = html;
-    }
-
-    function markAsPaid(id) {
-        updateBooking(id, { paid: true });
-        render();
-        alert('✅ Marcado como pago!');
-    }
-
-    function blockClientAction(phone, name) {
-        if (confirm(`Bloquear ${name}?`)) {
-            blockClient(phone, name);
-            render();
-            alert('✅ Cliente bloqueado!');
-        }
-    }
-
-    function renderClientsList() {
-        const clients = getAllClients().sort((a, b) => b.totalBookings - a.totalBookings);
-        let html = clients.length === 0 ? '<p style="text-align:center;color:#888;padding:40px">Nenhum cliente cadastrado</p>' : clients.map(c => `
-            <div class="client-card">
-                <div><strong>👤 ${c.name}
-```
+export default AdminPanel;
